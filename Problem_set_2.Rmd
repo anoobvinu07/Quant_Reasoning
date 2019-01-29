@@ -92,6 +92,8 @@ $$
 
 Where, the numerator $(b-d)^2$ $<$ 0. This is mathematically stable but it needs to be checked whether they are ecologically stable.
 
+Allee effect:
+
 
 
 
@@ -126,8 +128,11 @@ par(mfrow=c(1,1))
 plot(out[,1],out[,2],ylab='N',xlab='time',las=1)
 ```
 
-N <- 10 # horizontal line
-N <- 50 # horizontal line
+Noted:
+
+    N <- 10 # horizontal line
+    
+    N <- 50 # horizontal line
 
 ```{r}
 x <- c(0,10,50) # equilibrium points
@@ -139,15 +144,14 @@ M <- 50
 d <- 0.2
 
 
-curve(b*x/(x+M) - d - c*x, from = 0, to = 100, ylab = "dN/dt", xlab = "N") # N is turned into x, due to some problem with the curve()
+curve(b*x/(x+M) - d - c*x, from = 0, to = 100, ylim = c(-0.3,0.1),ylab = "dN/dt", xlab = "N") # N is turned into x, due to some problem with the curve()
 
 x <- c(0,10,50) # equilibrium points
 y <- c(0,0,0)
-points(x,y, pch = c(1,19,19))
+points(x,y, pch = c(1,1,19))
 
 
 
-library(tidyverse)
 
 
 ```
