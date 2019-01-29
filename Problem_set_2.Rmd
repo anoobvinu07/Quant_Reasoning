@@ -94,7 +94,7 @@ Where, the numerator $(b-d)^2$ $<$ 0. This is mathematically stable but it needs
 
 Allee effect:
 
-
+# still working on the meaning of this result
 
 
 3. The previous problem did not include any negative density-dependence. To test this assumption, we can include competition in our previous problem. Assuming N=0 is an equilbium point (if N=0, it will not change), modify the code below to estimate the two other equilbrium points and each of their stability. If the population drops below 0, assume it went extinct. You can modify both the initial state value for N or the amount of time (times object) to run the model. When you know the equilbrium points and their stability, sketch a plot of $b\frac{N}{N+M} - d - cN$ versus $N$ and show the equilibrium points as open (unstable) or closed (stable) balls.
