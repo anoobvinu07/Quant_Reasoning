@@ -1,0 +1,76 @@
+---
+title: "QuantReasoning_notes"
+author: "Anoob Prakash"
+date: "23 January 2019"
+output: html_document
+---
+Date: 23 Jan 2019
+
+####What is chaos?
+- small perturbations that can lead to large scale disorder #initial idea from the class
+- how do you seprate out something that is purely stochastic or just chaos?
+- Systems that are highly sensitive to initial conditions
+
+Henri Poincare: first writtings on chaos behavior; though he did not term it as chaos 
+
+####When does chaos emerge?
+
+Discrete-time                         | Continuous-time
+--------------------------------------|----------------------------------------------------
+non linear dimensions                 | need to have atleast three dimensions to have chaos
+
+May, 1974
+- Introduced the idea of chaos to ecology
+
+####Continuous-Time Models
+-logistic time model in continuous time
+growth rate = dN/dt = 
+
+#### GitHub Collaboration
+
+bash code:
+
+* Initiate a git repository
+    git init
+    
+    git status - to check the status of the git files to be uploaded
+* To add 
+    git add my_doc.Rmd
+    
+    git commit -m 'put comments here for the commit you are about to do'
+    
+    git push - to push it to the github repository online
+    
+    note: local machine is master and origin is the online
+    
+
+    
+    
+    
+* push an existing repository from the command line
+    git remote add origin https://github.com/anoobvinu07/Quant_Reasoning.git
+    git push -u origin master
+  
+* To push the commits in the local machine to online, use the following command
+    git push origin master
+    
+    after modifying the file, use `git add`
+    
+* To add all the files to the repository
+    git add -A
+    
+* To clone an online repository to the local machine
+    git clone put the clone address here
+    
+* To pull changes from origin to the local machine
+    git pull origin master
+
+### Exponential vs Logistic growth model
+
+* In exponential growth, a population's per capita (per individual) growth rate stays the same regardless of population size, making the population grow faster and faster as it gets larger.
+
+* In nature, populations may grow exponentially for some period, but they will ultimately be limited by resource availability.
+
+* In logistic growth, a population's per capita growth rate gets smaller and smaller as population size approaches a maximum imposed by limited resources in the environment, known as the carrying capacity (*K*).
+
+* Exponential growth produces a J-shaped curve, while logistic growth produces an S-shaped curve.

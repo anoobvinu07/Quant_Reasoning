@@ -1,0 +1,154 @@
+---
+title: "Single-species models in continuous time"
+author: "Anoob Prakash"
+date: "25 January 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+1. Imagine you are applying your ecology and evolution knowledge to better understand the development of cancer (a burgeoning new field actually). After metastasizing, cancer spread throughout the body, a single cancer cell reached the patient’s colon. The cancer cell now divides and grows at an exponential rate. Spratt et. al (1996) found that colon cancer had an average doubling time of 109 days. Assume a lethal cancer size is on the order of 
+1x10^12^ (1 000 000 000 000) cells. How long will it take for the colon tumor to reach this lethal size if left untreated?
+
+`Merlo et al., 2006. Cancer as an evolutionary and ecological process. Nature reviews cancer, 6(12), p.924.`
+
+Since the population doubles from $N_{0}$ to $N_{t}$, then hypothetically $N_{0}$ = 0 and $N_{t}$ = 2.
+
+$$
+\frac{dN}{dt} = rt
+$$
+$$
+N(t) = N_{0}(e^{rt})
+$$
+
+```{r}
+r <- log(2)/109 #rate
+log(1e+12)/r
+```
+
+Ans: 4345.082 days for the tumour to reach lethal size if untreated.
+
+2. One strategy to combat problematic insect species (like malaria-carrying mosquitoes) is to release sterile males to overwhelm the population. The equation below denotes the number of females (N), number of males (M), birth rate (b), and death rate (d). Determine the equilibrium points and the stability of each for the equation. Which equilibrium point tells you the critical threshold for population extinction? How does this relate to the Allee effect?
+
+$$
+\frac{dN}{dt} = b\frac{N}{N+M} - d
+$$
+Ans:
+First, we find the equilibrium point for $\frac{dN}{dt} = b\frac{N}{N+M} - d$, then we find the derivative for $b\frac{N}{N+M} - d$, which we consider it as F.
+
+#### 1. Finding the equilibrium points;
+
+$$
+\frac{dN}{dt} = b\frac{N}{N+M} - d = 0
+$$
+
+$$\frac{bN}{N+M} = d$$
+
+$$bN = d(N+M)$$
+
+$$bN = dN + dM$$
+
+$$N(b-d) = dM$$
+
+$$N = \frac{dM}{b-d}$$
+
+This is the eqilibrium point for the population.
+
+#### 2. Taking the derivative of the equation with respect to N
+
+
+$$
+\frac{dF}{dN} = b\left(\frac{dF}{dN} \frac{N}{N+M}\right) - 0 
+$$
+Derivative of d with respect to N is zero.
+
+$$
+ = b \left[\frac{(N+M)1 - N(1+0)}{(N+M)^2} \right]
+$$
+$$
+= b \left[\frac{M}{(N+M)^2} \right]
+$$
+
+$$
+\frac{dF}{dN} = \frac{bM}{(N+M)^2}
+$$
+
+This here is the stable point for the population. 
+
+
+#### 3.Plug in the equilibrium points
+
+$$
+\left.\frac{dF}{dN}\right|_{\bar{N}\frac{dM}{b-d}} = \frac{bM}{\left(\frac{dM}{b-d} + M\right)^2}  
+$$
+
+
+$$
+= \frac{bM} {\left(\frac{bM}{b-d}\right)^2}
+$$
+
+$$
+= \frac{(b-d)^2}{bM} < 0 
+$$
+
+Where, the numerator $(b-d)^2$ $<$ 0. This is mathematically stable but it needs to be checked whether they are ecologically stable.
+
+
+
+
+3. The previous problem did not include any negative density-dependence. To test this assumption, we can include competition in our previous problem. Assuming N=0 is an equilbium point (if N=0, it will not change), modify the code below to estimate the two other equilbrium points and each of their stability. If the population drops below 0, assume it went extinct. You can modify both the initial state value for N or the amount of time (times object) to run the model. When you know the equilbrium points and their stability, sketch a plot of $b\frac{N}{N+M} - d - cN$ versus $N$ and show the equilibrium points as open (unstable) or closed (stable) balls.
+
+
+$$
+\frac{dN}{dt} = b\frac{N}{N+M} - d - cN
+$$
+
+```{r}
+# install.packages("deSolve")
+library(deSolve)
+## Loading required package: deSolve
+# Initial values
+state <- c(N=8)
+times <- seq(0,100,by=0.1)
+
+# Parameters
+parameters <- c(b = 2.4,c=0.02,M=50,d=0.2)
+
+# Model
+sterile_insect <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- b*N/(N+M) - d - c*N
+      list(c(dN))   
+  })}
+
+# Solve model and plot results
+out <- ode(y = state,times=times,func=sterile_insect,parms=parameters) # ode=ordinary differential eqns.
+par(mfrow=c(1,1))
+plot(out[,1],out[,2],ylab='N',xlab='time',las=1)
+```
+
+N <- 10 # horizontal line
+N <- 50 # horizontal line
+
+```{r}
+x <- c(0,10,50) # equilibrium points
+y <- c(0,0,0)
+
+b <- 2.4
+c <- 0.02
+M <- 50
+d <- 0.2
+
+
+curve(b*x/(x+M) - d - c*x, from = 0, to = 100, ylab = "dN/dt", xlab = "N") # N is turned into x, due to some problem with the curve()
+
+x <- c(0,10,50) # equilibrium points
+y <- c(0,0,0)
+points(x,y, pch = c(1,19,19))
+
+
+
+library(tidyverse)
+
+
+```
+
