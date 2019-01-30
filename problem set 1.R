@@ -38,71 +38,6 @@ N[1] = 0.1 # no reason for choosing the value of 0.1 for this model.
 
 # bifurcation datagram
 
-# attempt 1
-
-# Parameters
-max_time = 50 
-r = 0.4 # pop. growth/death rate
-K = 1 # carrying capacity
-
-# Iterate model
-for (R in seq(from = 0.1, to = 4.0, by = 0.1)){
-  for (t in 1:max_time){
-  N[t+1] = N[t] + r*N[t]*(1 - N[t]/K)
-  
-  }
-  val <- seq(0.1,4.0,0.1)
-  
-  points(x=val, y=N[40:50])
-}
-
-plot(N)
-
-
-# attempt 2
-
-# Parameters
-max_time = 50 
-r = 0.4 # pop. growth/death rate
-K = 1 # carrying capacity
-
-# Iterate model
-for (r in seq(from = 0.1, to = 4.0, by = 0.1)){
-  for (t in 1:max_time){
-    N[t+1] = N[t] + r*N[t]*(1 - N[t]/K)
-    
-  }
-  val1 <- seq(0.1,4.0,0.1)
-  val2 <- N
-  
-  points(x=val1[1:40], y=val2[11:50], pch=".")
-}
-
-plot(N)
-
-# attempt 3
-
-# Parameters
-max_time = 50 
-r = 0.4 # pop. growth/death rate
-K = 1 # carrying capacity
-
-val1=matrix(data=NA, nrow=40, ncol=1)
-counter = 0
-
-for (r in seq(from = 0.1, to = 4.0, by = 0.1)){
-  for (t in 1:max_time){
-    N[t+1] = N[t] + r*N[t]*(1 - N[t]/K)
-    
-  }
-  counter=counter+1
-  val1[counter,1] <- r
-  val2 <- N
-  
-  points(x=val1[2:40], y=val2[12:50], pch=".")
-}
-
-plot(N)
 
 # attempt 4##################################################################
 
@@ -112,7 +47,7 @@ r = 0.4 # pop. growth/death rate
 K = 1 # carrying capacity
 
 val1=matrix(data=NA, nrow=10, ncol=1)
-counter = 0
+# counter = 0
 plot(-10,-10, ylim = c(0,1.5), xlim = c(0,4))
 for (r in seq(from = 0.1, to = 4.0, by = 0.1)){
   for (t in 1:max_time){

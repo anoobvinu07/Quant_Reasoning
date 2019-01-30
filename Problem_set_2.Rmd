@@ -87,14 +87,11 @@ $$
 $$
 
 $$
-= \frac{(b-d)^2}{bM} < 0 
+= \frac{(b-d)^2}{bM}  
 $$
+Where, the numerator $(b-d)^2$ < 0. This is mathematically stable but not ecologically stable.
 
-Where, the numerator $(b-d)^2$ $<$ 0. This is mathematically stable but it needs to be checked whether they are ecologically stable.
-
-Allee effect:
-
-# still working on the meaning of this result
+This $\frac{(b-d)^2}{bM}$ represents the threshold defined in the allee effect. Thus, if it breaches this threshhold, there might be mate limitation and not enough males present for the population to bounce back up to the previous state.
 
 
 3. The previous problem did not include any negative density-dependence. To test this assumption, we can include competition in our previous problem. Assuming N=0 is an equilbium point (if N=0, it will not change), modify the code below to estimate the two other equilbrium points and each of their stability. If the population drops below 0, assume it went extinct. You can modify both the initial state value for N or the amount of time (times object) to run the model. When you know the equilbrium points and their stability, sketch a plot of $b\frac{N}{N+M} - d - cN$ versus $N$ and show the equilibrium points as open (unstable) or closed (stable) balls.
@@ -156,3 +153,4 @@ points(x,y, pch = c(1,1,19))
 
 ```
 
+The equilibrium point at 50 would be the stable one.
