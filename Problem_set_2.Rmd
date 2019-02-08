@@ -2,8 +2,10 @@
 title: "Single-species models in continuous time"
 author: "Anoob Prakash"
 date: "25 January 2019"
-output: html_document
-editor_options: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
   chunk_output_type: console
 ---
 1. Imagine you are applying your ecology and evolution knowledge to better understand the development of cancer (a burgeoning new field actually). After metastasizing, cancer spread throughout the body, a single cancer cell reached the patient’s colon. The cancer cell now divides and grows at an exponential rate. Spratt et. al (1996) found that colon cancer had an average doubling time of 109 days. Assume a lethal cancer size is on the order of 

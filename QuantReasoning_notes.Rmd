@@ -64,6 +64,22 @@ bash code:
     
 * To pull changes from origin to the local machine
     git pull origin master
+    
+```{bash}
+git clone paste link
+
+# then make whatever changes to doc
+git add file_name
+
+git commit -m "message"
+
+git push -u origin master
+
+# then the owner can type
+
+git pull origin master # now they have the updated file
+
+```
 
 ### Exponential vs Logistic growth model
 

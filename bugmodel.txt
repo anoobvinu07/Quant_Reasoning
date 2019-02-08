@@ -1,0 +1,25 @@
+
+    model{
+    
+    #Prior
+      alpha0 ~ dnorm(0, 0.1)
+      alpha1 ~ dnorm(0, 0.1)
+
+      beta0 ~ dnorm(0, 0.1)
+      beta1 ~ dnorm(0, 0.1)
+
+    #Ecological model: occupancy
+      for(i in 1:R){
+      logit(psi[i]) <- alpha0 + alpha1*edge[i]
+      z[i] ~ dbern(psi[i]) # true occupancy state
+
+        #Detection model
+          for(j in 1:S){
+            logit(p[i,j]) <- beta0 + beta1*date[i,j]
+            mu.p[i,j] <- z[i] * p[i,j] # based on the true occupancy state
+            obs.data[i,j] ~ dbern(mu.p[i,j])
+          }
+      }
+    
+}
+    
