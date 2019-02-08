@@ -9,20 +9,45 @@ output: html_document
 
 By the end of the lesson, students should be able to:
 
-Understand the concepts of Landscape ecology and Species Distribution Modelling (SDM) and how it fits within the broader framework of landscape ecology.
+Understand the concepts of Landscape ecology and Species Distribution Modelling (SDM) and how it fits within the broader framework of landscape ecology. 
+
+**Topics to be covered:**  
+
+- Patch-corridor-matrix  
+
+- Scientific principles of landscape ecology  
+
+    - Fragmentation  
+    - Structure and Function  
+    - Connectivity  
+    - Individual focal species  
+    - Generic focal species  
+  
+  
+- Applications and themes  
+
+    - SLOSS tradeoffs  
+    - Corridor linkage  
+    - Inter-disciplinary studies  
+  
+
+- Species Distribution Modelling  
+
+    - Cuurent trends  
+    
+        - $\Delta$TraitSDM  
 
 ##Step 2: Assessing outcomes
 
-Students will be assessed in two ways:
-
-Through running a R package and try to understand SDM.
+Students will be assessed through discussion.
 
 ##Step 3: Learning plan
 
-Before class students will read a pair of papers on chaos in ecology. In addition, students will complete a problem set at home where a simple model (logistic growth in discrete-time) generates chaos. These two tasks will set the stage for a discussion about chaos in class. The instructor will begin with a brief introduction of chaos (including definitions, importance, and video) to the class. This will include a series of active learning techniques:
+  - New concepts regarding landscape ecology will be introduced and help them relate to the ones studied in the spatial ecology lectures.  
+  - This might probably be review at this point of time for some. Try to understand the underlying concepts and the current trends in field.  
+  - Learn why it evolved and how interdciplinary science and technological advances are helping it grow.
+  - Try to answer some in-class questions and discuss various ideas within groups.
 
-think-pair-share exercise of student definition of chaos
-discussion of papers read for class
 
 ##Step 4: Reflections
 
@@ -30,23 +55,5 @@ discussion of papers read for class
 
 
 
-### Notes:
-
-How do organisms interact with the landscape? 
 
 
-This question is the focus of a vast amount of research effort globally, but the following are some notable examples to give the general idea:
-
-Patches: species may prefer a certain kind of habitat, for example mature woodland, or ponds. Individuals of the species of concern may not be able to breed or feed outside of this type of habitat. The habitat thus defines the patch.
-
-Matrix: If one land use dominates the landscape, that landuse forms the matrix, e.g. arable land in eastern England. If the dominant land use is uniformly inhospitable, organisms become isolated in patches of suitable habitat. For example, some characteristic plants of ancient woodland cannot survive in arable fields, and do not have seeds equipped with a mechanism to disperse between isolated woodland fragments.
-
-Corridors: There has been a lot of research and debate about the role of hedgerows as corridors for small woodland mammals and birds. Such species may be able to move between woodland habitat patches along hedgrerows, whereas they might not feel safe enough to cross an arable field.
-
-Barriers: Roads, pipelines or fences might form barriers to movement of shy or less agile animals.
-
-Mosaic: Lesser horseshoe bats are an example of an animal that needs to live in a landscape mosaic. They sleep in old trees in mature woodland, then fly along hedgerows to open, wet places where they hunt for flies.
-
-***
-
-`source`: https://bit.ly/2S8VCT6
