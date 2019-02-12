@@ -2,7 +2,9 @@
 title: "Species Distribution Modelling"
 author: "Anoob Prakash"
 date: "2 February 2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ##Step 1: Expected outcomes
@@ -51,6 +53,31 @@ Students will be assessed through discussion.
 
 ##Step 4: Reflections
 
+**What went well:**  
+
+  - A healthy discussion was initiated between students regarding various concepts taught in class. 
+  
+  - Covered a lot of the basic's required by the student's for taking up and learning landscape ecology and SDMs on thier own. 
+  
+  - Student's participated and helped in giving better explanation and examples for different topics and scenarios.  
+  
+**What could be improved:**  
+
+  - Certain concepts was not clearly explained and was lacking in examples. Needs to get in more details (e.g. spatial autocorrelation). This could have been solved, if I had spend more time in less topics to cover.
+  
+  
+  - There was a lack of cohesive flow and I unknowingly ommitted certain portions of the presentation. A properly ordered notes would have helped in conveying all the required info to the class.
+  
+  - More details about SDMs with simpler explantaions backed by explaining the individual elements of SDM.
+  
+  
+**What would I do differently next time:**  
+  
+  - A more cohesive storyline approach with properly ordered notes to follow through.  
+  
+  - Simplify and explain with examples along with better use of the visual aid.  
+  
+  - Providing some materials for the students to go through before class help them understand the topics better and participate efficiently.  
 
 
 
