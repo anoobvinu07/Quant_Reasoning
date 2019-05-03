@@ -1,0 +1,197 @@
+---
+title: "Brendan"
+author: "Anoob Prakash"
+date: "1 March 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+Context:
+Extending on compbio pipeline of: data ---> tidy ---> manipulat <-> model <-> visualize
+
+
+```{r}
+library(tidyverse)
+library(wesanderson)
+
+### string basics (before we start using 'stringr' package)
+
+s = 'most of the time, strings are characters between single or double quotes'
+print(s)
+
+s = 'most of the time, strings are characters between \' or \"'
+
+### printing in R has unpredictable behavior with escapes:
+print(s)
+
+# use writeLines instead
+writeLines(s)
+
+### two important characters when processing data
+writeLines('this is a line\nthis is a new line\tthat was a tab')
+print('this is a line\nthis is a new line\tthat was a tab')
+
+### manipulate strings with stringr
+
+x = c('ab', '123')
+
+str_sub(x, start = 1, end = 2) # for sub stringing
+str_sub(x[1], 2, 2) = 'B' ; x
+
+str_dup(x, 2) # string duplicate - duplicate everything twice
+str_dup(x, str_length(x))
+
+str_to_lower(sentences[1:10])
+str_to_title(sentences[1:10])
+
+str_replace(fruit, 'e', '_')
+str_replace(x, '.$', 'LAST') # replace with regex
+str_replace_all(fruit, '[aeiou]', 'I') # replace all vowels with I
+
+str_pad(x, 4)
+str_pad(x, max(str_length(x)), 'both')
+
+### use str_c for combining several strings and vecgors of strings
+str_c('x', 'y') # glues two things together
+str_c('^', x, '$', sep = '-') # sep operates between arguments #it also knows to recycles
+str_c(x, collapse = ', ') # while collapse operates between vector elements
+str_c(x, 'x', sep = '-', collapse='=')
+
+str_glue('x has {length(x)} elements') # put the r code here inside the curly {} brackets
+str_c('Some numbers:',
+      str_glue('pi is {pi}'),
+      str_glue('time is {Sys.time()}.'),
+      sep = ' ')
+
+### detected matches (regular expression)
+load("COMPADRE_v.4.0.1.RData")
+authors = compadre$metadata$Authors %>% na.omit()
+
+### these function helpful for finding matches on list level
+sum(str_detect(authors, 'White'))
+str_subset(authors, "White")
+compadre$metdata$DOI.ISBN[str_which(authors, 'White')]
+
+### these functins more suited for matches within strings
+str_extract(fruit, '[^aeiou\\s]{2}')
+str_extract_all(fruit, '[^aeiou\\s] {2}')
+str_match(sentences[1:50], '^(The).*\\s(\\w{4})[\\s\\.].*')
+```
+
+
+### 'purrr' package  
+
+extends R beyond ooping functions and useful for making short cuts
+
+object ofinterst : list
+
+```{r}
+
+### map function: similar to the 'apply' functions
+
+my_func  = function(x, a=3, b=3){
+  print(str_glue('eq: {x} * {a} - {b}'))
+  x * a - b
+}
+
+map(1:3, my_func)
+map_dbl(1:3, my_func, a=4, b=-1)
+
+### map family is useful with 'split'
+
+mpg = as_tibble(mpg); mpg # : mpg is to print the output as well, instaed of putting the whole code within () or using the prin()
+
+mpg %>% 
+  split(.$cyl) %>% 
+  map(function(df) lm(hwy ~ trans, data = df)) # inline function
+
+mpg %>%
+  split(.$cyl) %>%
+  map(~lm(hwy ~ trans, data = .))
+
+### use map2 family for applying function over 2 lists/vectors in parallel
+map2_chr(c('ab', '12'), c('cd', '34'), str_c)
+
+### EX: how would you describe the diff between the following two calls?
+### what happened in each?
+map(1:3, my_func, a=2:4)
+map2(1:3, 2:4, my_func) # works in parallel across the two lists
+
+### genelizes to pamp(="parallel map") family
+
+params = tribble(
+  ~mean, ~sd, ~n,
+  1,     0.5, 1,
+  5,     5,  10,
+  -3,   10, 100
+)
+
+params %>% 
+  pmap(rnorm) %>%
+  str()
+
+### EX: modify the above code to instead output the summary stats for
+### each of the 3 samples
+### hint: use map and summary
+
+params %>%
+  pmap(rnorm) %>%
+  map(summary) 
+
+norms = cross_df(params) %>% # compute cross products
+  pmap(rnorm)
+
+str(norms)
+
+norms %>%
+  keep(~length(.) == 100) %>%
+  set_names(str_c('X', 1:length(.))) %>%
+  as_tibble() %>%
+  gather(samp, obs) %>%
+  ggplot(aes(x=obs)) + geom_histogram() + facet_wrap(.~samp, scale = "free")
+
+### use modify like map, but when you want to keep structure of what 
+### you are manipulating
+
+modify_if(mpg, is.numeric, ~(. - mean(.)) / sd(.))
+
+### use reduce family to apply function to chan of outputs.
+### useful for building list from complex objects
+### for ex. when have several datasets with common identifier: 
+dfs = list(
+  age = tibble(name='john', age = 30),
+  sex = tibble(name = c('john', 'mary'), sex = c('M', 'F')),
+  trt = tibble(name = 'mary', treatment = 'A')
+)
+
+dfs %>% reduce(full_join)
+
+### accumulate like reduce, but return output along the way
+1:5 %>% accumulate(my_func)
+
+
+### doing random walk in a few lines
+take_step = function(start,by){
+  start + by
+}
+
+walk = rnorm(100) %>% accumulate(take_step) #random walk
+
+qplot(x=1:100, y=walk, geom='line')
+
+### use safely to deal with failing functions safely
+
+x = list(1, 10, 'a')
+safe_log = safely(log)
+
+y=x %>%
+  map(safe_log)
+str(y)
+```
+
+
+
+
+
+```
+

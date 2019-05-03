@@ -1,0 +1,155 @@
+"","Site","Year","Date","TransNo","Tlength","Twidth","Taxon","count","dens"
+"61","Bell Island",2014,"5/8/2014",4,25,4,"Pisaster.ochraceus",0,0
+"62","FHL Dock",2014,"5/8/2014",3,25,4,"Pisaster.ochraceus",4,1.33333333333333
+"63","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Pisaster.ochraceus",0,0
+"64","Reuben Tarte",2014,"6/5/2014",3,20,4,"Pisaster.ochraceus",0,0
+"65","Shaw Island",2014,"6/6/2014",2,20,4,"Pisaster.ochraceus",0,0
+"66","Strathmanns",2014,"5/7/2014",4,25,4,"Pisaster.ochraceus",4,1
+"67","Yellow Island",2014,"6/19/2014",2,20,4,"Pisaster.ochraceus",0,0
+"68","Bell Island",2015,"8/10/2015",1,20,4,"Pisaster.ochraceus",0,0
+"69","FHL Dock",2015,"4/1/2015",7,20,4,"Pisaster.ochraceus",0,0
+"70","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Pisaster.ochraceus",2,0.357142857142857
+"71","Reuben Tarte",2015,"4/4/2015",4,20,4,"Pisaster.ochraceus",0,0
+"72","Shaw Island",2015,"8/10/2015",1,20,4,"Pisaster.ochraceus",0,0
+"73","Strathmanns",2015,"4/4/2015",2,20,4,"Pisaster.ochraceus",0,0
+"74","Yellow Island",2015,"4/5/2015",4,20,4,"Pisaster.ochraceus",0,0
+"76","Bell Island",2014,"5/8/2014",4,25,4,"Pisaster.brevispinus",0,0
+"77","FHL Dock",2014,"5/8/2014",3,25,4,"Pisaster.brevispinus",0,0
+"78","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Pisaster.brevispinus",2,0.4
+"79","Reuben Tarte",2014,"6/5/2014",3,20,4,"Pisaster.brevispinus",0,0
+"80","Shaw Island",2014,"6/6/2014",2,20,4,"Pisaster.brevispinus",0,0
+"81","Strathmanns",2014,"5/7/2014",4,25,4,"Pisaster.brevispinus",3,0.75
+"82","Yellow Island",2014,"6/19/2014",2,20,4,"Pisaster.brevispinus",1,0.625
+"83","Bell Island",2015,"8/10/2015",1,20,4,"Pisaster.brevispinus",0,0
+"84","FHL Dock",2015,"4/1/2015",7,20,4,"Pisaster.brevispinus",0,0
+"85","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Pisaster.brevispinus",0,0
+"86","Reuben Tarte",2015,"4/4/2015",4,20,4,"Pisaster.brevispinus",0,0
+"87","Shaw Island",2015,"8/10/2015",1,20,4,"Pisaster.brevispinus",0,0
+"88","Strathmanns",2015,"4/4/2015",2,20,4,"Pisaster.brevispinus",0,0
+"89","Yellow Island",2015,"4/5/2015",4,20,4,"Pisaster.brevispinus",0,0
+"91","Bell Island",2014,"5/8/2014",4,25,4,"Henricia.sp.",51,12.75
+"92","FHL Dock",2014,"5/8/2014",3,25,4,"Henricia.sp.",21,7
+"93","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Henricia.sp.",5,1
+"94","Reuben Tarte",2014,"6/5/2014",3,20,4,"Henricia.sp.",48,20
+"95","Shaw Island",2014,"6/6/2014",2,20,4,"Henricia.sp.",0,0
+"96","Strathmanns",2014,"5/7/2014",4,25,4,"Henricia.sp.",20,5
+"97","Yellow Island",2014,"6/19/2014",2,20,4,"Henricia.sp.",10,6.25
+"98","Bell Island",2015,"8/10/2015",1,20,4,"Henricia.sp.",7,8.75
+"99","FHL Dock",2015,"4/1/2015",7,20,4,"Henricia.sp.",4,0.714285714285714
+"100","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Henricia.sp.",7,1.25
+"101","Reuben Tarte",2015,"4/4/2015",4,20,4,"Henricia.sp.",34,10.625
+"102","Shaw Island",2015,"8/10/2015",1,20,4,"Henricia.sp.",0,0
+"103","Strathmanns",2015,"4/4/2015",2,20,4,"Henricia.sp.",16,10
+"104","Yellow Island",2015,"4/5/2015",4,20,4,"Henricia.sp.",19,5.9375
+"106","Bell Island",2014,"5/8/2014",4,25,4,"Orthasterias",1,0.25
+"107","FHL Dock",2014,"5/8/2014",3,25,4,"Orthasterias",0,0
+"108","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Orthasterias",0,0
+"109","Reuben Tarte",2014,"6/5/2014",3,20,4,"Orthasterias",0,0
+"110","Shaw Island",2014,"6/6/2014",2,20,4,"Orthasterias",0,0
+"111","Strathmanns",2014,"5/7/2014",4,25,4,"Orthasterias",1,0.25
+"112","Yellow Island",2014,"6/19/2014",2,20,4,"Orthasterias",2,1.25
+"113","Bell Island",2015,"8/10/2015",1,20,4,"Orthasterias",0,0
+"114","FHL Dock",2015,"4/1/2015",7,20,4,"Orthasterias",0,0
+"115","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Orthasterias",0,0
+"116","Reuben Tarte",2015,"4/4/2015",4,20,4,"Orthasterias",0,0
+"117","Shaw Island",2015,"8/10/2015",1,20,4,"Orthasterias",0,0
+"118","Strathmanns",2015,"4/4/2015",2,20,4,"Orthasterias",0,0
+"119","Yellow Island",2015,"4/5/2015",4,20,4,"Orthasterias",0,0
+"121","Bell Island",2014,"5/8/2014",4,25,4,"Solaster.dawsoni",0,0
+"122","FHL Dock",2014,"5/8/2014",3,25,4,"Solaster.dawsoni",0,0
+"123","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Solaster.dawsoni",0,0
+"124","Reuben Tarte",2014,"6/5/2014",3,20,4,"Solaster.dawsoni",0,0
+"125","Shaw Island",2014,"6/6/2014",2,20,4,"Solaster.dawsoni",0,0
+"126","Strathmanns",2014,"5/7/2014",4,25,4,"Solaster.dawsoni",0,0
+"127","Yellow Island",2014,"6/19/2014",2,20,4,"Solaster.dawsoni",0,0
+"128","Bell Island",2015,"8/10/2015",1,20,4,"Solaster.dawsoni",0,0
+"129","FHL Dock",2015,"4/1/2015",7,20,4,"Solaster.dawsoni",0,0
+"130","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Solaster.dawsoni",0,0
+"131","Reuben Tarte",2015,"4/4/2015",4,20,4,"Solaster.dawsoni",0,0
+"132","Shaw Island",2015,"8/10/2015",1,20,4,"Solaster.dawsoni",0,0
+"133","Strathmanns",2015,"4/4/2015",2,20,4,"Solaster.dawsoni",0,0
+"134","Yellow Island",2015,"4/5/2015",4,20,4,"Solaster.dawsoni",0,0
+"136","Bell Island",2014,"5/8/2014",4,25,4,"Solaster.stimpsoni",8,2
+"137","FHL Dock",2014,"5/8/2014",3,25,4,"Solaster.stimpsoni",0,0
+"138","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Solaster.stimpsoni",0,0
+"139","Reuben Tarte",2014,"6/5/2014",3,20,4,"Solaster.stimpsoni",1,0.416666666666667
+"140","Shaw Island",2014,"6/6/2014",2,20,4,"Solaster.stimpsoni",0,0
+"141","Strathmanns",2014,"5/7/2014",4,25,4,"Solaster.stimpsoni",0,0
+"142","Yellow Island",2014,"6/19/2014",2,20,4,"Solaster.stimpsoni",0,0
+"143","Bell Island",2015,"8/10/2015",1,20,4,"Solaster.stimpsoni",0,0
+"144","FHL Dock",2015,"4/1/2015",7,20,4,"Solaster.stimpsoni",0,0
+"145","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Solaster.stimpsoni",0,0
+"146","Reuben Tarte",2015,"4/4/2015",4,20,4,"Solaster.stimpsoni",0,0
+"147","Shaw Island",2015,"8/10/2015",1,20,4,"Solaster.stimpsoni",0,0
+"148","Strathmanns",2015,"4/4/2015",2,20,4,"Solaster.stimpsoni",0,0
+"149","Yellow Island",2015,"4/5/2015",4,20,4,"Solaster.stimpsoni",0,0
+"151","Bell Island",2014,"5/8/2014",4,25,4,"Leptasterias.hexactis",0,0
+"152","FHL Dock",2014,"5/8/2014",3,25,4,"Leptasterias.hexactis",0,0
+"153","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Leptasterias.hexactis",0,0
+"154","Reuben Tarte",2014,"6/5/2014",3,20,4,"Leptasterias.hexactis",0,0
+"155","Shaw Island",2014,"6/6/2014",2,20,4,"Leptasterias.hexactis",0,0
+"156","Strathmanns",2014,"5/7/2014",4,25,4,"Leptasterias.hexactis",0,0
+"157","Yellow Island",2014,"6/19/2014",2,20,4,"Leptasterias.hexactis",0,0
+"158","Bell Island",2015,"8/10/2015",1,20,4,"Leptasterias.hexactis",0,0
+"159","FHL Dock",2015,"4/1/2015",7,20,4,"Leptasterias.hexactis",0,0
+"160","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Leptasterias.hexactis",2,0.357142857142857
+"161","Reuben Tarte",2015,"4/4/2015",4,20,4,"Leptasterias.hexactis",0,0
+"162","Shaw Island",2015,"8/10/2015",1,20,4,"Leptasterias.hexactis",0,0
+"163","Strathmanns",2015,"4/4/2015",2,20,4,"Leptasterias.hexactis",0,0
+"164","Yellow Island",2015,"4/5/2015",4,20,4,"Leptasterias.hexactis",0,0
+"166","Bell Island",2014,"5/8/2014",4,25,4,"Mediaster",0,0
+"167","FHL Dock",2014,"5/8/2014",3,25,4,"Mediaster",0,0
+"168","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Mediaster",0,0
+"169","Reuben Tarte",2014,"6/5/2014",3,20,4,"Mediaster",0,0
+"170","Shaw Island",2014,"6/6/2014",2,20,4,"Mediaster",0,0
+"171","Strathmanns",2014,"5/7/2014",4,25,4,"Mediaster",0,0
+"172","Yellow Island",2014,"6/19/2014",2,20,4,"Mediaster",0,0
+"173","Bell Island",2015,"8/10/2015",1,20,4,"Mediaster",0,0
+"174","FHL Dock",2015,"4/1/2015",7,20,4,"Mediaster",0,0
+"175","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Mediaster",6,1.07142857142857
+"176","Reuben Tarte",2015,"4/4/2015",4,20,4,"Mediaster",0,0
+"177","Shaw Island",2015,"8/10/2015",1,20,4,"Mediaster",0,0
+"178","Strathmanns",2015,"4/4/2015",2,20,4,"Mediaster",0,0
+"179","Yellow Island",2015,"4/5/2015",4,20,4,"Mediaster",0,0
+"181","Bell Island",2014,"5/8/2014",4,25,4,"Dermasterias.imbricata",0,0
+"182","FHL Dock",2014,"5/8/2014",3,25,4,"Dermasterias.imbricata",0,0
+"183","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Dermasterias.imbricata",1,0.2
+"184","Reuben Tarte",2014,"6/5/2014",3,20,4,"Dermasterias.imbricata",0,0
+"185","Shaw Island",2014,"6/6/2014",2,20,4,"Dermasterias.imbricata",0,0
+"186","Strathmanns",2014,"5/7/2014",4,25,4,"Dermasterias.imbricata",0,0
+"187","Yellow Island",2014,"6/19/2014",2,20,4,"Dermasterias.imbricata",0,0
+"188","Bell Island",2015,"8/10/2015",1,20,4,"Dermasterias.imbricata",0,0
+"189","FHL Dock",2015,"4/1/2015",7,20,4,"Dermasterias.imbricata",0,0
+"190","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Dermasterias.imbricata",0,0
+"191","Reuben Tarte",2015,"4/4/2015",4,20,4,"Dermasterias.imbricata",3,0.9375
+"192","Shaw Island",2015,"8/10/2015",1,20,4,"Dermasterias.imbricata",0,0
+"193","Strathmanns",2015,"4/4/2015",2,20,4,"Dermasterias.imbricata",1,0.625
+"194","Yellow Island",2015,"4/5/2015",4,20,4,"Dermasterias.imbricata",0,0
+"196","Bell Island",2014,"5/8/2014",4,25,4,"Pycnopodia",17,4.25
+"197","FHL Dock",2014,"5/8/2014",3,25,4,"Pycnopodia",6,2
+"198","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Pycnopodia",10,2
+"199","Reuben Tarte",2014,"6/5/2014",3,20,4,"Pycnopodia",31,12.9166666666667
+"200","Shaw Island",2014,"6/6/2014",2,20,4,"Pycnopodia",14,8.75
+"201","Strathmanns",2014,"5/7/2014",4,25,4,"Pycnopodia",21,5.25
+"202","Yellow Island",2014,"6/19/2014",2,20,4,"Pycnopodia",6,3.75
+"203","Bell Island",2015,"8/10/2015",1,20,4,"Pycnopodia",0,0
+"204","FHL Dock",2015,"4/1/2015",7,20,4,"Pycnopodia",0,0
+"205","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Pycnopodia",0,0
+"206","Reuben Tarte",2015,"4/4/2015",4,20,4,"Pycnopodia",3,0.9375
+"207","Shaw Island",2015,"8/10/2015",1,20,4,"Pycnopodia",0,0
+"208","Strathmanns",2015,"4/4/2015",2,20,4,"Pycnopodia",0,0
+"209","Yellow Island",2015,"4/5/2015",4,20,4,"Pycnopodia",1,0.3125
+"211","Bell Island",2014,"5/8/2014",4,25,4,"Evasterias",6,1.5
+"212","FHL Dock",2014,"5/8/2014",3,25,4,"Evasterias",1,0.333333333333333
+"213","Lab 11 Beach",2014,"3/28/2014",5,25,4,"Evasterias",0,0
+"214","Reuben Tarte",2014,"6/5/2014",3,20,4,"Evasterias",17,7.08333333333333
+"215","Shaw Island",2014,"6/6/2014",2,20,4,"Evasterias",10,6.25
+"216","Strathmanns",2014,"5/7/2014",4,25,4,"Evasterias",1,0.25
+"217","Yellow Island",2014,"6/19/2014",2,20,4,"Evasterias",7,4.375
+"218","Bell Island",2015,"8/10/2015",1,20,4,"Evasterias",1,1.25
+"219","FHL Dock",2015,"4/1/2015",7,20,4,"Evasterias",0,0
+"220","Lab 11 Beach",2015,"4/1/2015",7,20,4,"Evasterias",1,0.178571428571429
+"221","Reuben Tarte",2015,"4/4/2015",4,20,4,"Evasterias",3,0.9375
+"222","Shaw Island",2015,"8/10/2015",1,20,4,"Evasterias",1,1.25
+"223","Strathmanns",2015,"4/4/2015",2,20,4,"Evasterias",2,1.25
+"224","Yellow Island",2015,"4/5/2015",4,20,4,"Evasterias",2,0.625

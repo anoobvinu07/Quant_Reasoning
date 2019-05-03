@@ -1,0 +1,1613 @@
+---
+title: "igraphPresentationFinal"
+author: "Sam Rosenblatt"
+date: "12/5/2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+
+```{r}
+
+library(igraph)
+library(igraphdata) # more like a dataset to play with than a package
+library(visNetwork)
+library(patchwork)
+library(RColorBrewer)
+data(package = "igraphdata")
+data(foodwebs)
+```
+
+
+Why igraph?
+
+* Pretty fast for most things
+
+* Many other pachages use it
+
+* There are a ton of companion packages. If you want to do something you are working with using igraph, and it doesnt seem like igraph can do it, or igraph does it poorly, chances are theres a package which lets you do it/ do it better better using igraph formats
+
+* Versions exist in R, Python, Matlab, C/C++ so data and pseudocode can be easily transferred between languages
+
+
+#What are networks?
+- A representation of individuals/components of a system and their connections which is defined in a way that allows us to analyze them mathematically and computationally
+
+- Vertices/nodes/actors : Individuals/components
+
+- Edges/ links/ ties : connections between individuals/components
+
+A "graph" in mathematics is simply a set of vertices paired with the corresponding set of edges. A "network" is that, in addition to the other variables and properties associated with the vertices and edges
+
+Examples:
+
+<p style="text-align:left;"><img src="NetworkExamples.png"  width="680" height="500"></p>
+
+* [Some Publicly Available Networks](https://icon.colorado.edu/#!/networks)
+
+
+#Making a network from scratch
+```{r}
+g<-make_empty_graph( directed = FALSE)
+g <- g + vertices('Bio', 'Eco', 'CS', 'Soc', 'Psych', 'Econ')
+plot(g, vertex.label.dist=3) #Add a little label distance so the labels dont overlap with the nodes. Easier to see
+```
+
+Adding edges is simple
+
+```{r}
+g <- g + edges(c('CS','Bio', 'CS','Eco', 'CS','Econ', 'CS','Soc', 'CS','Psych')) #Edges are represented by pairs of nodes
+plot(g, vertex.label.dist=3)
+```
+
+You can add more edges later
+
+```{r}
+g <- g + edges(c('Bio','Eco', 'Eco','Econ', 'Soc','Psych', 'Soc','Econ'))
+plot(g, vertex.label.dist=3)
+```
+
+
+
+#Directed Networks
+
+Directed networks are networks where an a connection between two nodes points from one node to the other in a way where the direciton of the pointing is important. Often the direction implies that something flows in that direction
+
+Examples:
+
+- Food Webs: A points to B if the biomass of A transfers to B (B eats A)
+
+- Needle-sharing network: A points to B if B uses a needle after A (pathogen could spread from A to B)
+
+- Citation Networks: A points to B if A cites B (an idea passes from A to B)
+
+Simple example of directed network:
+```{r}
+adjMat <-matrix(data = 0, nrow=7,ncol=7)
+species <- c('coyote', 'vulture', 'snake', 'grass', 'bug', 'hawk', 'mouse')
+rownames(adjMat) <- colnames(adjMat) <- species
+print(adjMat)
+
+
+adjMat["grass","bug"] <-1
+adjMat["bug","hawk"] <-1
+
+
+adjMat["grass","mouse"] <-1
+adjMat["mouse","hawk"] <-1
+adjMat["mouse","coyote"] <-1
+adjMat["mouse","snake"] <-1
+adjMat["mouse","vulture"] <-1
+
+adjMat["hawk","coyote"] <-1
+adjMat["coyote","vulture"] <-1
+
+adjMat["snake","vulture"] <-1
+
+
+
+
+print(adjMat)
+foodWeb <- graph_from_adjacency_matrix(adjMat)
+plot(foodWeb, vertex.label.dist=3)
+is_weighted(foodWeb)
+```
+
+
+
+#Weighted Networks
+Weighted networks are networks where edges come with "weight" which usually implies something about the "strength",  "length", or "flow rate" of that edge. 
+
+Examples:
+
+- Transportation networks: weights may imply distance, time, or cost to transport
+
+- Food web: weights can denote energy flux between species
+
+- Water transfer networks: weights can denote rate of transfer
+
+- Citation networks: Weights denote number of sentences paper B was cited by paper A
+
+
+# Widget-time! 
+Pleast copy and paste the following link into your browsers: https://paperscape.org/
+[note; steps 2-4 may seem silly but its because the website is in beta]
+
+Steps:
+1. open the website
+2. click tag icon on top right
+3. X out of the Welcome to "My" Paperscape menu
+4. Click trash can icon near bottom left
+5. Search for a topic, author, or title in the search bar
+6. On the right hand side, choose a paper, the rest wont be interesting unless it has at least a couple citations and references so pick one that does. Click this paper
+7. Click "Draw All"
+8. Now click on any paper that is drawn that you are interested in and you will see all of its citations and references. You can add these to the graph by clicking the little faded yellowy network emoji lookin thing next to each paper (if it is not faded then it is already part of the graph)
+9. This can be a useful tool for finding new papers 
+10. Now go vote on the BioRxiv feature request: https://github.com/paperscape/paperscape-mapclient/issues/5
+
+
+# Back to igraph
+```{r}
+#Check if your network is weighted
+is_weighted(foodWeb)
+
+adjMat["grass","bug"] <-0.2
+adjMat["bug","hawk"] <-1
+
+
+adjMat["grass","mouse"] <-0.8
+adjMat["mouse","hawk"] <-0.2
+adjMat["mouse","coyote"] <-0.2
+adjMat["mouse","snake"] <-0.2
+adjMat["mouse","vulture"] <-0.4
+
+adjMat["hawk","coyote"] <-1
+adjMat["coyote","vulture"] <-1
+
+adjMat["snake","vulture"] <-1
+
+
+
+
+print(adjMat)
+foodWeb <- graph_from_adjacency_matrix(adjMat, weighted=TRUE)
+plot(foodWeb, vertex.label.dist=3)
+#Notice that nothing looks different
+
+#Now check if your network is weighted again
+is_weighted(foodWeb)
+
+#Label the edges with weights
+plot(foodWeb, vertex.label.dist=3, edge.label=E(foodWeb)$weight)
+#Labelling edges is good when you need to know the exact values of weights, but it gets messy with big or dense networks(with alot of edges)
+
+#Map edge weights to the widths of plotted edges
+E(foodWeb)$width <- E(foodWeb)$weight 
+plot(foodWeb, vertex.label.dist=3)
+#This is good except some edges are too thin
+
+
+# Modify edge widths to make it look better
+E(foodWeb)$width <- E(foodWeb)$weight*4 
+plot(foodWeb, vertex.label.dist=3)
+
+
+
+
+```
+
+In my example I weighted edges normalized to 1, to signify what percent of a population was being eaten by what, edges can be weighted in many different ways and need not be normalized to one. The method of weighting edges depends on the context of the system.
+
+
+
+[Show slide]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Working with data!
+```{r}
+
+#We pull this from the igraphdata package
+data(foodwebs)
+
+fwc <- foodwebs$CrystalC
+
+plot(fwc, layout=layout_as_tree, vertex.label.dist=1.5)
+
+plot(fwc, layout=layout_as_tree, vertex.label = 1:length(V(fwc)))
+
+
+#Introducing visNetwork package
+#Here is the quick and dirty way to use it (kinda like qplot for it)
+visIgraph(fwc, layout="layout_as_tree")
+
+
+```
+
+visNetwork (and most widgets generated in R) are javascript-based, so you can put interactive widgets on your website, assignments, and presentations (and even some textbooks-http://networksciencebook.com/).
+
+Specifically:
+
+the visNetwork package is based on htmlwidgets, so :
+
+compatible with shiny, R Markdown documents, and RStudio viewer
+
+
+Examples: 
+• https://datastorm-open.github.io/visNetwork/
+• http://www.kateto.net/polnet2017#colors-in-r-plots
+
+
+
+
+
+# Bipartite networks
+
+[Slide]
+
+## Grab some data from online
+1. https://spiesmanecology.com/2017/04/30/network-vis1/
+
+```{r}
+
+#You can try using this line to have the data be directly read from your clipboard, but I think that is windows only. If it doesnt work use the commented-out line below
+net = read.table("clipboard", header=T, row.names=1)
+
+#This will prompt an input in the console below. Paste the data there and hit enter
+# net <- read.table(stdin(), header=TRUE, row.names=1) 
+
+# V(i_net)$color <- NULL   #in order to remove any sort of color coding in the network
+
+i_net = graph_from_incidence_matrix(net, weight=T)
+plot(i_net)
+
+#With this layout, it just looks like any other network
+
+
+visIgraph(i_net, layout="layout_as_bipartite")
+#However, the fact that you CAN do this and there are no intra-group interactions between top nodes and top nodes and bottom nodes and bottom nodes means it is infact bipartite
+
+vertex_attr_names(i_net) # takes in a igraph object and tell what attributes it has...
+
+#Note this DOESNT work. It seems like it does but it actually just assigns all vertices with the if or the else depending on which was last
+# ifelse(substring(V(i_net)$name, 1, 1) %in% LETTERS, V(i_net)$types<-'plant', V(i_net)$types<-'pollinator')
+
+
+for (v in V(i_net)){
+  if(substring(V(i_net)[v]$name, 1, 1) %in% LETTERS){
+    V(i_net)[v]$type<-'plant'
+    V(i_net)[v]$color <- 'green'
+  }
+  else{
+    V(i_net)[v]$type<-'pollinator'
+    V(i_net)[v]$color<-'goldenrod'
+  }
+}
+
+
+
+
+
+visIgraph(i_net)
+
+
+#Project bipartite into 2 one-mode networks
+#What people do with the kevin bacon game
+
+#proj <- bipartite_projection(i_net)
+
+
+```
+
+
+# Weird variants
+
+You can also have networks where nodes come from distinct groups of very different things but still interact with both each other and the other groups
+
+Desc: Graph model of the visuotactile brain areas and connections of the macaque monkey. The model
+consists of 45 areas and 463 directed connections.
+
+```{r}
+par(mfrow=c(1,1))
+data(macaque)
+length(V(macaque)) #First we have to find out the length of macaque
+
+
+#Sometimes you just have to try a bunch of different visualizations/visualization softwares till one looks nice/works
+visIgraph(macaque, layout="layout_as_tree")
+#You likely will have to drag fingers to zoom in and see the labels
+
+#There are lots of ways for an algorithm to jumble and stretch a network around so that the nodes look spread out enough to see the global and local connections and clusters instead of just one big "hairball" or "deathstar". Below is a slightly version where you can play with the parameters till you get a visualization you like
+layout = layout_with_graphopt(graph=macaque, start = NULL, niter = 500,
+charge = 0.001, mass = 30, spring.length = 0.5,
+spring.constant = 0.5, max.sa.movement = 5)
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+```
+
+
+# Protein-Protein interaction networks
+
+Desc: The undirected and connected network of interactions in the immunoglobulin protein. It is made
+up of 1316 vertices representing amino-acids and an edge is drawn between two amino-acids if the
+shortest distance between their C_alpha atoms is smaller than the threshold value θ = 8 Angstrom.
+
+WARNING: THIS MAY CRASH SLOWER COMPUTERS
+```{r}
+par(mfrow=c(1,1))
+data(immuno)
+
+#Sometimes you just have to try a bunch of different visualizations/visualization softwares till one looks nice/works
+data <- toVisNetworkData(immuno)
+
+#There are lots of ways for an algorithm to jumble and stretch a network around so that the nodes look spread out enough to see the global and local connections and clusters instead of just one big "hairball" or "deathstar". Below is a slightly version where you can play with the parameters till you get a visualization you like
+layout = layout_with_graphopt(graph=immuno, start = NULL, niter = 500,
+charge = 0.001, mass = 30, spring.length = 0.5,
+spring.constant = 0.5, max.sa.movement = 5)
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+```
+
+
+
+
+
+#Cleaning Data
+
+
+```{r}
+par(mfrow=c(1,1))
+data(USairports)
+
+
+
+airports <- igraph::simplify(USairports, remove.multiple = T, remove.loops = T)
+
+airports <- delete.vertices(airports, V(airports)[degree(airports) <= 50])
+
+plot(airports, layout=layout_with_graphopt, vertex.size=1, edge.arrow.size=.05, vertex.label=NA)
+
+#visIgraph(immuno, layout="layout_nicely")
+
+data <- toVisNetworkData(airports)
+visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
+
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+```
+
+
+
+
+
+
+
+
+```{r}
+# par(mfrow=c(1,1))
+# data(UKfaculty)
+# 
+# 
+# faculty <- igraph::simplify(UKfaculty, remove.multiple = T, remove.loops = T)
+# 
+# plot(UKfaculty, layout=layout_with_graphopt, vertex.size=1, edge.arrow.size=.05, vertex.label=NA)
+# 
+# visIgraph(UKfaculty, layout="layout_with_fr")
+# 
+# data <- toVisNetworkData(UKfaculty)
+# visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
+# 
+# layout = layout_with_graphopt(graph=UKfaculty, start = NULL, niter = 500,
+# charge = 0.001, mass = 30, spring.length = 0.5,
+# spring.constant = 0.5, max.sa.movement = 5)
+# 
+# visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+#   visIgraphLayout(layout = "layout_with_fr") %>%
+#   visNodes(size = 10) %>%
+#   visOptions(highlightNearest = list(enabled = T, hover = T), 
+#              nodesIdSelection = T)
+# 
+# 
+# 
+# data <- toVisNetworkData(faculty)
+# 
+# 
+# 
+# 
+# 
+# visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+#   visIgraphLayout(layout = "layout_with_fr") %>%
+#   visNodes(size = 10) %>%
+#   visOptions(highlightNearest = list(enabled = T, hover = T), 
+#              nodesIdSelection = T)
+# 
+
+
+
+
+```
+
+
+
+
+
+
+
+# Vertex Attributes      
+
+Weight and direction are attributes of edges
+
+Vertices also can have attributes.
+
+The attributes of vertices, edges, and the entire network are what seperates network science from graph theory
+
+```{r}
+#Check current vertex attributes
+vertex_attr_names(fwc)
+```
+
+##Continous vertex attributes
+```{r}
+V(fwc)$size <- V(fwc)$Biomass #note that we are setting a new vertex attribute
+visIgraph(fwc, layout="layout_as_tree")
+
+
+V(fwc)$size <- log1p(V(fwc)$Biomass) # logarathim of 1 + the Biomass
+visIgraph(fwc, layout="layout_as_tree")
+```
+
+
+
+##Categorical vertex attributes
+```{r}
+
+
+V(fwc)$color <- V(fwc)$ECO
+visIgraph(fwc, layout="layout_as_tree")
+```
+
+
+#More vertex attributes in a different network
+```{r}
+par(mfrow=c(1,1))
+data(UKfaculty)
+
+
+plot(UKfaculty, layout=layout_with_graphopt, vertex.size=1, edge.arrow.size=.05, vertex.label=NA)
+
+V(UKfaculty)$color <- V(UKfaculty)$Group
+V(UKfaculty)$label <- paste("Node", 1:81)
+label = paste("Node", 1:10)
+visIgraph(UKfaculty, layout="layout_with_fr")
+
+```
+
+
+#Network Analysis
+Network analysis refers to analyzing existing networks
+
+## Centrality
+```{r}
+#Some centrality measures are designed for directed networks like our foodweb
+
+V(fwc)$size <- degree(fwc, mode="in")*1
+visIgraph(fwc, layout="layout_as_tree")
+
+V(fwc)$size <- degree(fwc, mode="out")*3
+visIgraph(fwc, layout="layout_as_tree")
+
+
+# We switch to dolphins since many of the built in network measures are not exactly defined for weighted directed networks(You can still calculate them usually they just dont mean what they typically mean)
+G <-dolphins
+
+#Degree
+V(G)$size <- degree(G)
+visIgraph(G, layout="layout_nicely")
+
+
+
+
+#Betweenness Centrality
+V(G)$size <- log1p(betweenness(G))*5
+visIgraph(G, layout="layout_nicely")
+
+
+#Closeness
+#Calculated as the reciprocal of the sum of the length of the shortest paths between the node and all other nodes in the graph. Thus, the more central a node is, the closer it is to all other nodes.
+V(G)$size <- closeness(G)*10^4
+visIgraph(G, layout="layout_nicely")
+
+
+
+
+```
+
+
+#Importing Data
+```{r}
+par(mfrow=c(1,1))
+data(USairports)
+
+# map("state", col="grey20", fill=TRUE, bg="black", lwd=0.1)
+# print(head(V(USairports)$Position))
+
+
+
+#imn<-immuno
+
+dolphinEdgeList <- matrix( c(9,4,10,6,10,7,11,1,11,3,14,6,14,7,14,10,15,1,15,4,16,1,17,15,18,2,18,7,18,10,18,14,19,16,20,2,20,8,21,9,21,17,21,19,22,19,23,18,25,15,25,16,25,19,26,18,27,2,27,26,28,2,28,8,28,18,28,26,28,27,29,2,29,9,29,21,30,11,30,19,30,22,30,25,31,8,31,20,31,29,32,18,33,10,33,14,34,13,34,15,34,17,34,22,35,15,35,34,36,30,37,2,37,21,37,24,38,9,38,15,38,17,38,22,38,34,38,35,38,37,39,15,39,17,39,21,39,34,40,37,41,1,41,8,41,15,41,16,41,34,41,37,41,38,42,2,42,10,42,14,43,1,43,3,43,11,43,31,44,15,44,30,44,34,44,38,44,39,45,3,45,21,45,35,45,39,46,9,46,16,46,19,46,22,46,24,46,25,46,30,46,38,47,44,48,1,48,11,48,21,48,29,48,31,48,43,50,35,50,47,51,15,51,17,51,21,51,34,51,43,51,46,52,5,52,12,52,19,52,22,52,24,52,25,52,30,52,46,52,51,53,15,53,30,53,39,53,41,54,44,55,2,55,7,55,8,55,14,55,20,55,42,56,16,56,52,57,6,57,7,58,6,58,7,58,10,58,14,58,18,58,40,58,42,58,49,58,55,59,39,60,4,60,9,60,16,60,37,60,46,61,33,62,3,62,38,62,54 ), nc = 2, byrow = TRUE) #Make a matrix that is the number of edges with 'to' and 'from' columns
+
+dolphins <- graph_from_edgelist(dolphinEdgeList)
+dolphins <- as.undirected(dolphins)
+# plot(airports, layout=layout_with_graphopt, vertex.size=1, edge.arrow.size=.05, vertex.label=NA)
+
+#visIgraph(immuno, layout="layout_nicely")
+
+data <- toVisNetworkData(dolphins)
+visNetwork(nodes = data$nodes, edges = data$edges, height = "500px")
+
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+sm <- sir(dolphins, beta=1, gamma=1, no.sim = 1000)
+#quant <- quantile(sm, comp = c("NI", "NS", "NR"))
+plot(sm, comp='NR')
+
+head(sm)
+
+```
+
+
+
+# Display multiple attributes at once
+```{r}
+G <-dolphins
+
+
+
+#Multiple attributes with visNetwork
+V(G)$size <- log1p(betweenness(G)+1)*5
+V(G)$borderWidth<- (degree(G)+1)/2
+V(G)$color <- coreness(G)*2
+visIgraph(G, layout="layout_nicely")
+
+#Add a legend
+data <- toVisNetworkData(G)
+visNet <- visIgraph(G)
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visLegend()
+  
+#treating continous variables as discrete for now
+#You can bin them yourself if you want but this works ok for this purpose
+
+#Occaisonally, classic plot is still better depending on what you are using it for
+V(G)$size <- log1p(betweenness(G))*2
+V(G)$size2 <- degree(G)*2
+V(G)$color <- coreness(G)*2
+
+plot(G, vertex.shape="rectangle", layout=layout_with_graphopt, vertex.label.dist=0.7, vertex.label.cex=0.5)
+```
+
+
+
+
+
+
+
+```{r}
+#library(deSolve)
+
+
+SIR.model <- function(t, b, g, init){
+require(deSolve)
+#init <- c(S=(5000-10)/5000,I=10/5000,R=0)
+init <- init
+parameters <- c(bet=b,gamm=g)
+resolution <- 1
+time <- seq(0,t,by=t/(resolution*length(1:t)))
+            
+eqn <- function(time,state,parameters){
+with(as.list(c(state,parameters)),{
+    dS <- -bet*S*I
+    dI <- bet*S*I-gamm*I
+    dR <- gamm*I
+    return(list(c(dS,dI,dR)))})}
+
+out<-ode(y=init,times=time,eqn,parms=parameters)
+out.df<-as.data.frame(out)
+
+require(ggplot2)
+mytheme4 <- theme_bw() +
+theme(text=element_text(colour="black")) +
+theme(panel.grid = element_line(colour = "white")) +
+theme(panel.background = element_rect(fill = "#B2B2B2"))
+theme_set(mytheme4)
+
+title <- bquote("SIR Model: Basic")
+subtit <- bquote(list(beta==.(parameters[1]),~gamma==.(parameters[2])))
+
+res<-ggplot(out.df,aes(x=time))+
+ggtitle(bquote(atop(bold(.(title)),atop(bold(.(subtit))))))+
+geom_line(aes(y=S,colour="Susceptible"))+
+geom_line(aes(y=I,colour="Infected"))+
+geom_line(aes(y=R,colour="Recovered"))+
+ylab(label="Proportion")+
+xlab(label="Time (days)")+
+theme(legend.justification=c(1,0), legend.position=c(1,0.5))+
+theme(legend.title=element_text(size=12,face="bold"),
+legend.background = element_rect(fill='#FFFFFF',
+size=0.5,linetype="solid"),
+legend.text=element_text(size=10),
+legend.key=element_rect(colour="#FFFFFF",
+fill='#C2C2C2',
+size=0.25,
+linetype="solid"))+
+scale_colour_manual("Compartments",
+breaks=c("Susceptible","Infected","Recovered"),
+values=c("blue","red","darkgreen"))
+
+print(res)
+
+}
+# ggsave(plot=res,
+# filename=paste0("SIRplot_","time",t,"beta",b,"gamma",g,".png"),
+# width=8,height=6,dpi=180)
+# getwd()
+
+            
+
+```
+
+```{r}
+
+beta_ode=8
+
+gamma=7
+library(ggplot2)
+N = 1000
+finalTime = 10
+SIR.model(finalTime,b=beta_ode,g=gamma, init = c(S=(N-1)/N,I=1/N,R=0.0))
+
+```
+
+```{r}
+
+beta_ode=3
+
+gamma=2
+library(ggplot2)
+N = 8000
+finalTime = 15
+SIR.model(finalTime,b=beta_ode,g=gamma, init = c(S=(N-1)/N,I=1/N,R=0.0))
+#SIR.model(70,0.32,1/7)
+
+
+#length(V(dolphins))
+```
+
+
+
+
+
+
+```{r}
+#sm <- sir(dolphins, beta=1, gamma=1, no.sim = 1000)
+
+k = 3
+N=1000
+p = k/(N-1)
+erg <- erdos.renyi.game(n=N, p=p, type = "gnp")
+
+components <- decompose(erg, min.vertices=3)
+erg <- components[[1]]
+is_simple(erg)
+
+
+beta_net = beta_ode/k
+
+ergSim <- sir(erg, beta=beta_net, gamma=gamma, no.sim = 1000)
+
+plot(ergSim, comp='NR', xlim=c(0, finalTime), ylim=c(0, N))
+
+
+
+```
+
+
+```{r}
+#sm <- sir(dolphins, beta=1, gamma=1, no.sim = 1000)
+#quant <- quantile(sm, comp = c("NI", "NS", "NR"))
+
+
+N=1000
+full <- make_full_graph(N)
+# k = 3
+# N=1000
+# p = k/(N-1)
+# erg <- erdos.renyi.game(n=N, p=p, type = "gnp")
+
+components <- decompose(erg, min.vertices=3)
+erg <- components[[1]]
+is_simple(erg)
+#numEdges = length(E(full))
+
+# beta=0.5
+# edgesToDelete <- c()
+# for (edge in E(full)){
+#   if (runif(1) >= beta){
+#    edgesToDelete<- append(edge, edgesToDelete)
+#   }
+# }
+# 
+# full<-delete_edges(full, edgesToDelete)
+
+
+#If "beta" meant the same thing with a full network as it does with the ODE version then this should be the same as the ode above
+#fullSim <- sir(full, beta=1, gamma=1, no.sim = 1000)
+#beta_ode = 1.1
+
+beta_net = beta_ode/k
+#gamma = 5
+ergSim <- sir(erg, beta=beta_net, gamma=gamma, no.sim = 10)
+#ergSim <- sir(erg, beta=beta_net, gamma=gamma)
+#plot(ergSim, comp='NR')
+plot(ergSim, comp='NR', xlim=c(0, finalTime), ylim=c(0, N))
+# plot(ergSim, comp='NI', xlim=c(0, finalTime))
+# plot(ergSim, comp='NS', xlim=c(0, finalTime))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+tree <- as.undirected(graph.tree(N, children = (k-1)))
+plot(tree, layout=layout_as_tree)
+```
+
+
+```{r}
+#sm <- sir(dolphins, beta=1, gamma=1, no.sim = 1000)
+#quant <- quantile(sm, comp = c("NI", "NS", "NR"))
+
+
+is_simple(tree)
+#numEdges = length(E(full))
+
+# beta=0.5
+# edgesToDelete <- c()
+# for (edge in E(full)){
+#   if (runif(1) >= beta){
+#    edgesToDelete<- append(edge, edgesToDelete)
+#   }
+# }
+# 
+# full<-delete_edges(full, edgesToDelete)
+
+
+#If "beta" meant the same thing with a full network as it does with the ODE version then this should be the same as the ode above
+#fullSim <- sir(full, beta=1, gamma=1, no.sim = 1000)
+#beta_ode = 1.1
+
+beta_net = beta_ode/k
+#gamma = 5
+treeSim <- sir(tree, beta=beta_net, gamma=gamma, no.sim = 10000)
+#ergSim <- sir(erg, beta=beta_net, gamma=gamma)
+#plot(treeSim, comp='NR')
+plot(treeSim, comp='NR', xlim=c(0, finalTime))
+plot(treeSim, comp='NI', xlim=c(0, finalTime))
+plot(treeSim, comp='NS', xlim=c(0, finalTime))
+
+
+```
+
+
+
+
+
+
+
+```{r}
+#sm <- sir(dolphins, beta=1, gamma=1, no.sim = 1000)
+#quant <- quantile(sm, comp = c("NI", "NS", "NR"))
+
+
+is_simple(tree)
+#numEdges = length(E(full))
+
+# beta=0.5
+# edgesToDelete <- c()
+# for (edge in E(full)){
+#   if (runif(1) >= beta){
+#    edgesToDelete<- append(edge, edgesToDelete)
+#   }
+# }
+# 
+# full<-delete_edges(full, edgesToDelete)
+
+
+#If "beta" meant the same thing with a full network as it does with the ODE version then this should be the same as the ode above
+#fullSim <- sir(full, beta=1, gamma=1, no.sim = 1000)
+#beta_ode = 1.1
+
+beta_net = beta_ode/k
+#gamma = 5
+treeSim <- sir(tree, beta=beta_net, gamma=gamma, no.sim = 10000)
+#ergSim <- sir(erg, beta=beta_net, gamma=gamma)
+#plot(treeSim, comp='NR')
+plot(treeSim, comp='NR', xlim=c(0, finalTime))
+plot(treeSim, comp='NI', xlim=c(0, finalTime))
+plot(treeSim, comp='NS', xlim=c(0, finalTime))
+
+
+```
+
+
+
+
+
+
+
+
+```{r}
+spreadVirus <- function(G,Vinitial,p){  
+  
+  # Precompute all outgoing graph adjacencies
+  G$AdjList = get.adjlist(G,mode="out")
+  
+  # Initialize various graph attributes
+  V(G)$color    = "blue"
+  E(G)$color    = "black"
+  V(G)[Vinitial]$color <- "yellow"
+
+  # List to store the incremental graphs (for plotting later)
+  Glist <- list(G)
+  count <- 1
+  
+  # Spread the infection
+  active <- Vinitial
+  while(length(active)>0){
+    new_infected <- NULL
+    E(G)$color = "black"
+    for(v in active){
+      # spread through the daily contacts of vertex v
+      daily_contacts <- G$AdjList[[v]]
+      E(G)[v %->% daily_contacts]$color <- "red"
+      for(v1 in daily_contacts){
+        new_color <- sample(c("red","blue"), 1 ,prob=c(p,1-p))  # p is the infection probability     
+        if(V(G)[v1]$color == "blue" & new_color=="red"){ 
+          V(G)[v1]$color <- "red"
+          new_infected <- c(new_infected,v1) # add the infected people to new infected category
+        }
+        
+      V(G)[v]$color <- "black"
+      }
+    }
+    # the next active set
+    active <- new_infected
+    print(length(active))
+  
+    # Add graph to list
+    count <- count + 1
+    Glist[[count]] <- G
+  }
+  return(Glist)
+}
+```
+
+```{r}
+library(animation)
+# Run the simulation
+G=dolphins
+set.seed(42069)
+patient0s = c(1)
+Glist <- spreadVirus(G,Vinitial=patient0s,1/2)
+
+# Animation plots (generates a .GIF)
+require(animation)
+L <- layout.fruchterman.reingold(Glist[[1]])
+ani.options(interval=1, nmax=99)
+saveHTML({
+  count =0
+  for(i in 1:length(Glist)){
+    plot(Glist[[i]], layout = L,
+         vertex.label = NA,
+         vertex.size = 10,
+         vertex.color= V(G)$color,
+         vertex.frame.color= "white",
+         edge.arrow.size = 1,
+         edge.color=E(G)$color)
+    count = count +1
+    title(main="Graph simulation example", 
+          sub=paste("Time = ",count), cex.main = 3, cex.sub = 2)
+  }
+}, interval = 1, movie.name = "demo.gif", ani.width = 1000, ani.height = 1000)
+```
+
+```{r}
+spreadVirus <- function(G,Vinitial,p){  
+  
+  # Precompute all outgoing graph adjacencies
+  G$AdjList = get.adjlist(G,mode="out")
+  
+  # Initialize various graph attributes
+  V(G)$color    = "blue"
+  E(G)$color    = "black"
+  V(G)[Vinitial]$color <- "yellow"
+
+  # List to store the incremental graphs (for plotting later)
+  Glist <- list(G)
+  count <- 1
+  
+  # Spread the infection
+  active <- Vinitial
+  while(length(active)>0){
+    new_infected <- NULL
+    E(G)$color = "black"
+    for(v in active){
+      # spread through the daily contacts of vertex v
+      daily_contacts <- G$AdjList[[v]]
+      E(G)[v %->% daily_contacts]$color <- "red"
+      for(v1 in daily_contacts){
+        new_color <- sample(c("red","blue"), 1 ,prob=c(p,1-p))       
+        if(V(G)[v1]$color == "blue" & new_color=="red"){ 
+          V(G)[v1]$color <- "red"
+          new_infected <- c(new_infected,v1)
+        }
+        
+      V(G)[v]$color <- "black"
+      }
+    }
+    # the next active set
+    active <- new_infected
+    print(length(active))
+  
+    # Add graph to list
+    count <- count + 1
+    Glist[[count]] <- G
+  }
+  return(Glist)
+}
+```
+
+
+```{r}
+spreadVirusMany <- function(G,Vinitial,p){  
+  
+  # Precompute all outgoing graph adjacencies
+  G$AdjList = get.adjlist(G,mode="out")
+  
+  # Initialize various graph attributes
+  # Now we are doing many and no animation we make this slightly more efficient by checking 
+  V(G)$status    <- 0
+  V(G)[Vinitial]$status <- 1
+
+  # # List to store the incremental graphs (for plotting later)
+  # Glist <- list(G)
+  # count <- 1
+  
+  # Spread the infection
+  active <- Vinitial
+  outbreakSize<-1
+  while(length(active)>0){
+    new_infected <- NULL
+    
+    for(v in active){
+      outbreakSize<- outbreakSize + 1
+      # spread through the daily contacts of vertex v
+      daily_contacts <- G$AdjList[[v]]
+      
+      for(v1 in daily_contacts){
+        new_status <- sample(c(0, 1), 1 ,prob=c(p,1-p))       #Could make this slightly more efficient by using runif instead of sample
+        if(V(G)[v1]$status == 0 & new_status==1){ 
+          V(G)[v1]$status <- 1
+          new_infected <- c(new_infected,v1)
+        }
+        
+      V(G)[v]$status <- 3
+      }
+    }
+    # the next active set
+    active <- new_infected
+    #print(length(active))
+    #outbreakSize <- outbreakSize + length(active) #I dont think this is faster but it could be worth checking
+  
+    # # Add graph to list
+    # count <- count + 1
+    # Glist[[count]] <- G
+  }
+  return(outbreakSize)
+}
+```
+
+```{r}
+
+outbreakSizes <- c()
+
+trials <- 50
+G <- dolphins
+patient0s <- c(1)
+probTransmit <- 1/2
+
+for (i in 1:trials){
+  outbreakSizes <- c(outbreakSizes, spreadVirusMany(G, patient0s, probTransmit) )
+}
+
+```
+
+```{r}
+#qplot(outbreakSizes, geom="histogram")
+library(ggplot2)
+data <- as.data.frame(outbreakSizes)
+
+main <-"outbreak sizes"
+
+meanVal <- mean(outbreakSizes)
+anno <- paste("'mean:'~",meanVal)
+
+sizeHist <- ggplot(data, aes(x=outbreakSizes)) +  geom_histogram(binwidth = 1) + ggtitle(main) + geom_vline(aes(xintercept = mean(outbreakSizes)),col='red',size=1) + xlim(0, length(V(G))) +  annotate("text", x=40, y=15, label=anno, parse=TRUE)
+
+print(sizeHist)
+
+```
+
+# Often we like to look at outbreak size as percentage of total network
+```{r}
+#qplot(outbreakSizes, geom="histogram")
+
+outbreakPcts <- (outbreakSizes/length(V(G)))*100
+
+data <- as.data.frame(outbreakPcts)
+
+main <-"outbreak sizes (%)"
+
+meanVal <- mean(outbreakPcts)
+
+anno <- paste("'mean:'~",meanVal, "~'%'")
+
+pctHist <- ggplot(data, aes(x=outbreakPcts)) +  geom_histogram(binwidth = 100/length(V(G))) + ggtitle(main) + geom_vline(aes(xintercept = mean(outbreakPcts)),col='red',size=1) + xlim(0, 100) + annotate("text", x=40, y=15, label=anno, parse=TRUE)
+
+print(pctHist)
+
+sizeHist + pctHist
+
+```
+
+
+# Targeted immunization
+
+"immunization" in a network refers to any process that prevents a node from being infected and infecting anyone else.
+
+This can mean anything that effectively "removes" a node from the network, or severs all its connections, which amounts to essentially the same thing
+
+
+# Targeted immunization example 1
+
+## First look at the network and choose who to immunize
+```{r}
+G <- dolphins
+
+data <- toVisNetworkData(G)
+
+#layout <- visIgraphLayout(data, layout = "layout_with_fr")
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 12357) %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+```
+
+## 'Immunize' a group of nodes via deleting those vertices
+```{r}
+
+nodesToImmunize <- c(38, 61, 58, 23, 10)
+
+Gimmunized <- delete_vertices(G, nodesToImmunize)
+
+
+#Color the nodes we immunized in the original graph to check them out
+#set_vertex_attr(G, "color", index = nodesToImmunize, "orange")
+
+for (node in nodesToImmunize){
+  V(G)[node]$color <-"orange"
+}
+data <- toVisNetworkData(G)
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 12357) %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+```
+
+# Simulate outbreaks on the original network and the immunized network
+```{r}
+#What is the slicey way to do this?
+
+trials <- 500
+sirOG <-sir(G, beta=2, gamma=1, no.sim = trials)
+sirImm <- sir(Gimmunized, beta=2, gamma=1, no.sim = trials)
+
+
+resultsOG<-vector("list", trials)
+resultsImm<-vector("list", trials) 
+
+#now use a loop for each outcome
+for(i in 1:trials){
+  resultsOG[[i]]<-tail(sirOG[[i]]$NR, n=1 )
+  resultsImm[[i]]<-tail(sirImm[[i]]$NR, n=1 )
+}
+
+
+outbreakPctsOG <- (unlist(resultsOG)/length(V(G)))*100
+data <- as.data.frame(outbreakPctsOG)
+main <-"Network outbreak sizes (%): \n No immunization"
+meanVal <- mean(outbreakPctsOG)
+anno <- paste("'mean:'~",meanVal, "~'%'")
+
+pctHistOG <- ggplot(data, aes(x=outbreakPctsOG)) +  geom_histogram(binwidth = 100/length(V(G))) + ggtitle(main) + geom_vline(aes(xintercept = mean(outbreakPctsOG)),col='red',size=1) + xlim(0, 100) + annotate("text", x=40, y=15, label=anno, parse=TRUE)
+
+outbreakPctsImm <- (unlist(resultsImm)/length(V(G)))*100 #You could also measure #infected out of the unimmunized population by replacing length(V(G)) with length(V(Gimmunized)) here if you wanted
+data <- as.data.frame(outbreakPctsImm)
+main <-"network outbreak sizes (%):\n With immunization"
+meanVal <- mean(outbreakPctsImm)
+anno <- paste("'mean:'~",meanVal, "~'%'")
+
+pctHistImm <- ggplot(data, aes(x=outbreakPctsImm)) +  geom_histogram(binwidth = 100/length(V(G))) + ggtitle(main) + geom_vline(aes(xintercept = mean(outbreakPctsImm)),col='red',size=1) + xlim(0, 100) + annotate("text", x=40, y=15, label=anno, parse=TRUE)
+
+
+
+pctHistOG + pctHistImm
+
+```
+
+
+# Exercise 2, Part 1: Choose which nodes to immunize
+
+How can you choose which nodes to immunize in order to minimize average outbreak size?
+
+Directions:
+With your partner, follow along with the directions in the code below to choose which nodes to eliminate. When you think you have found a good set of 5, write them down on a slip of paper and give that to me
+```{r}
+# Set which network you will be designing an intervention for
+# You can start with the given network here, or use any of the other ones that we have looked at today or are in igraphdata
+
+G <- dolphins  
+
+#Bring up the network widget to see which nodes you want to immunize
+
+data <- toVisNetworkData(G)
+
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 12357) %>% #You can change the layout to another one if the fruchterman-reingold layout isnt working that well with the options here: https://igraph.org/r/doc/layout_.html
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+
+
+#DIRECTIONS
+############
+# • Put a few different sets of nodes you want to try immunizing in the vectors below
+# • For part 1, just look at the network and try to guess which nodes will be important to the spread and then try a couple different sets. We will get a bit more fancy for Pt. 2
+# • We will compare the results of different immunization strategies (your choices) on the distribution of outbreak sizes
+
+
+#NOTES:
+############
+# Since, all else equal, the more nodes you immunize, the smaller the outbreak size, when comparing different sets to immunize, make sure the sets are the same size
+# if the nodes in your network have labels besides integers, you may have to put each label in quotes within your vector
+nodesToImmunize1 <- c(21, 1, 15, 2, 39) #Example. Replace with self-chosen values
+nodesToImmunize2 <- c(1, 15, 38, 14, 51) #Example. Replace with self-chosen values
+nodesToImmunize3 <- c(2, 4, 8, 16, 32)
+
+
+# Now we will run simulations to see which set of nodes you immunized worked best
+
+
+
+# If your simulations take too long, are behaving weirdly, or you are just curious later on, you can adjust these parameters 
+# Be careful, this function can quickly take up all your RAM
+# I have not figured out exactly why it does this sometimes but if you keep beta and gamma as positive integers it shouldnt happen
+
+trials <- 500
+beta = 2
+gamma = 1
+
+#You shouldnt have to touch anything below here in this chunk
+
+Gimmunized1 <- delete_vertices(G, nodesToImmunize1)
+Gimmunized2 <- delete_vertices(G, nodesToImmunize2)
+Gimmunized3 <- delete_vertices(G, nodesToImmunize3)
+
+
+netsToSimOn <- list(G, Gimmunized1, Gimmunized2, Gimmunized3)
+
+#sirs <- vector("list", 4)
+histograms <- vector("list", 4)
+labelStuff <- list("No Immunization", nodesToImmunize1, nodesToImmunize2, nodesToImmunize3)
+for (i in 1:4){
+  sir_i <- sir(netsToSimOn[[i]], beta=beta, gamma=gamma, no.sim = trials)
+  results<-vector("list", trials)
+  
+  for(j in 1:trials){
+  results[[j]]<-tail(sir_i[[j]]$NR, n=1 )
+  }
+  
+  outbreakPcts <- (unlist(results)/length(V(netsToSimOn[[i]])))*100
+  data <- as.data.frame(outbreakPcts)
+  main <-paste("Network outbreak sizes (%): \n Nodes immunized: \n", toString(labelStuff[[i]]))
+  meanVal <- mean(outbreakPcts)
+  anno <- paste("'mean:'~",meanVal, "~'%'")
+  
+  # histograms[[i]] <- ggplot(data, aes(x=outbreakPctsOG)) +  geom_histogram(binwidth = 100/length(V(G))) + ggtitle(main) + geom_vline(aes(xintercept = mean(outbreakPctsOG)),col='red',size=1) + xlim(0, 100) + annotate("text", x=40, y=15, label=anno, parse=TRUE)
+  
+}
+
+
+
+
+(histograms[[1]] | histograms[[2]]) / (histograms[[3]] | histograms[[4]])
+
+
+
+```
+
+
+# Exercise 2, Part 2: Choose which nodes to immunize systematically
+
+Using concepts and code we discussed earlier in the class, can you think of ways to systematically choose which nodes to remove in order to minimize outbreak size?
+
+Directions: When you think you have found a good set of 5, write them down on a slip of paper and give that to me
+
+Note: there is not ONE strategy that is the correct answer that will givce you THE minimum. There are alot of ways to approach this.
+
+The code below is same as the above except it has space labeled where some analysis might take place.
+
+
+
+
+
+```{r}
+# Set which network you will be designing an intervention for
+# You can start with the given network here, or use any of the other ones that we have looked at today or are in igraphdata
+
+G <- dolphins  
+
+#Bring up the network widget to see which nodes you want to immunize
+#EXCEPT: in this part, you can still look at the widget for ideas, and you can use it to approach this in a semi-systematic way, but if you can, try to use code to pick the nodes to immunize instead of picking by hand
+
+data <- toVisNetworkData(G)
+
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 12357) %>% #You can change the layout to another one if the fruchterman-reingold layout isnt working that well with the options here: https://igraph.org/r/doc/layout_.html
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+#INSERT CODE HERE:
+# In this box, you should try to use code and concepts we discussed earlier to systematically choose which nodes would be good to immunize
+
+# You can start with only one strategy to pick nodes and leave the other ones blank, but if you can, try a couple different systematic strategies
+
+#If you get stuck, I have 3 progressively more revealing hints that will still keep some of the fun of discovery for you
+##############################################################
+#Strategy 1:
+
+
+
+#Strategy 2:
+
+
+
+#Strategy 3:
+
+
+
+##############################################################
+
+# Since, all else equal, the more nodes you immunize, the smaller the outbreak size, when comparing different sets to immunize, make sure the sets are the same size
+# if the nodes in your network have labels besides integers, you may have to put each label in quotes within your vector
+nodesToImmunize1 <- c(               ) 
+nodesToImmunize2 <- c(               ) 
+nodesToImmunize3 <- c(               )
+
+strategy <- nodesToImmunize1     #ENTER ONE OF THE ABOVE nodesToImmunize<i> HERE to see what the network will look like with the nodes you will immunize highlighted orange
+  
+#Reset color to NA to turn back nodes you colored earlier in your analysis
+V(G)$color    = NA
+
+for (node in strategy){
+  V(G)[node]$color <-"orange"
+}
+data <- toVisNetworkData(G)
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 12357) %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+
+# Now we will run simulations to see which set of nodes you immunized worked best
+
+#You can check out which nodes are going to be removed by your strategy with this visualization here
+
+Gimmunized1 <- delete_vertices(G, nodesToImmunize1)
+Gimmunized2 <- delete_vertices(G, nodesToImmunize2)
+Gimmunized3 <- delete_vertices(G, nodesToImmunize3)
+
+
+
+
+# If your simulations take too long, are behaving weirdly, or you are just curious later on, you can adjust these parameters 
+# Be careful, this function can quickly take up all your RAM
+# I have not figured out exactly why it does this sometimes but if you keep beta and gamma as positive integers it shouldnt happen
+
+trials <- 500
+beta = 2
+gamma = 1
+
+#You shouldnt have to touch anything below here in this chunk
+
+Gimmunized1 <- delete_vertices(G, nodesToImmunize1)
+Gimmunized2 <- delete_vertices(G, nodesToImmunize2)
+Gimmunized3 <- delete_vertices(G, nodesToImmunize3)
+
+
+netsToSimOn <- list(G, Gimmunized1, Gimmunized2, Gimmunized3)
+
+#sirs <- vector("list", 4)
+histograms <- vector("list", 4)
+labelStuff <- list("No Immunization", nodesToImmunize1, nodesToImmunize2, nodesToImmunize3)
+for (i in 1:4){
+  sir_i <- sir(netsToSimOn[[i]], beta=beta, gamma=gamma, no.sim = trials)
+  results<-vector("list", trials)
+  
+  for(j in 1:trials){
+  results[[j]]<-tail(sir_i[[j]]$NR, n=1 )
+  }
+  
+  outbreakPcts <- (unlist(results)/length(V(netsToSimOn[[i]])))*100
+  data <- as.data.frame(outbreakPcts)
+  main <-paste("Network outbreak sizes (%): \n Nodes immunized: \n", toString(labelStuff[[i]]))
+  meanVal <- mean(outbreakPcts)
+  anno <- paste("'mean:'~",meanVal, "~'%'")
+  
+  histograms[[i]] <- ggplot(data, aes(x=outbreakPctsOG)) +  geom_histogram(binwidth = 100/length(V(G))) + ggtitle(main) + geom_vline(aes(xintercept = mean(outbreakPctsOG)),col='red',size=1) + xlim(0, 100) + annotate("text", x=40, y=15, label=anno, parse=TRUE)
+  
+}
+
+
+
+
+(histograms[[1]] | histograms[[2]]) / (histograms[[3]] | histograms[[4]])
+
+
+
+```
+
+
+# Sentinel Nodes
+In the previous exercise we looked at how to choose nodes to immunize before an outbreak to try and minimize potential future outbreaks. Unfortunately, the way that alot of policy and funding mechanisms in public health and ecology work is geared more toward managing existing crises when they arise than preventing future ones. 
+
+However, what these mechanisms do allow for is some amount of surveillance/monitoring so that arising crises can be detected and mitigated before they scale out of control.
+
+An important question in public health and ecology is how best to perform this monitoring
+
+When the anticipated crises can be modeled as contagion on a network, we can optimize our surveillance by choosing to monitor particular nodes which are, in the space of possible scenarios, usually found to be infected very early on. By monitoring these nodes, we tend to find out about an epidemic while it is still gathering steam and while we can still do something to stop a full blown pandemic from occurring. 
+
+Formally: 
+• We simulate many epidemics on a network with random patient 0's
+• For simulation
+  • For every node in the network
+    • if the node becomes infected, record the time it was infected 
+• Define a new node attribute, \tau, called 'discovery time' to be the average time it takes for a particular node to become infected
+
+• Nodes with the lowest discovery times are optimal 'sentinel nodes'
+
+
+
+Note: Since not all nodes will be infected in every simulation, you also have to decide how much to penalize nodes in their 'sentinel score' for not being infected in one round
+
+
+```{r}
+spreadVirusSentinel <- function(G,Vinitial,p, penalty, numTrials){  
+  
+  # Precompute all outgoing graph adjacencies
+  G$AdjList = get.adjlist(G,mode="out")
+  
+  # Initialize various graph attributes
+  # Now we are doing many and no animation we make this slightly more efficient by checking 
+  V(G)$status    <- 0
+  V(G)[Vinitial]$status <- 1
+
+  # # List to store the incremental graphs (for plotting later)
+  # Glist <- list(G)
+  t <- 1
+  
+  # Spread the infection
+  active <- Vinitial
+  outbreakSize<-1
+  while(length(active)>0){
+    new_infected <- NULL
+    
+    #Now that time is involved, we have to be careful about the order things happen in
+    
+    for(i in length(active)){
+      v <- sample(active, 1) #Now that time is involved, we have to be careful about the order things happen in
+      outbreakSize<- outbreakSize + 1
+      # spread through the daily contacts of vertex v
+      daily_contacts <- G$AdjList[[v]]
+      
+      for(v1 in daily_contacts){
+        new_status <- sample(c(0, 1), 1 ,prob=c(p,1-p))       #Could make this slightly more efficient by using runif instead of sample
+        if(V(G)[v1]$status == 0 & new_status==1){ 
+          V(G)[v1]$status <- 1
+          V(G)[v1]$tau <- V(G)[v1]$tau + t/numTrials #keep a running average tau
+          new_infected <- c(new_infected,v1)
+        }
+        
+      V(G)[v]$status <- 3
+      }
+    }
+    # the next active set
+    active <- new_infected
+    #print(length(active))
+    #outbreakSize <- outbreakSize + length(active) #I dont think this is faster but it could be worth checking
+  
+    # # Add graph to list
+    t <- t + 1
+    # Glist[[count]] <- G
+    
+    #If a node was never infected, append a penalty to its vector of discovery times
+
+  }
+  for (node in V(G)){
+    if (V(G)[node]$status == 0){
+      V(G)[node]$tau <- V(G)[node]$tau + penalty/numTrials
+      }
+  }
+  return(G)
+}
+```
+
+
+
+```{r}
+G <- dolphins
+
+V(G)$tau    <- 0
+
+numTrials <- 50
+
+#G_with_tau <- dolphins
+
+
+for(i in 1:numTrials){
+  G <- spreadVirusSentinel(G,Vinitial=sample(V(G), 1),p=1/2, penalty=20, numTrials=numTrials) 
+}
+#We saw from the spreadVirus animation that it typically takes about 8 or 9 timesteps to finish the process entirely, so it seems reasonable to set the penalty at about twice that, although depending on your purposes, you might want to set it much higher if you only want to consider monitoring sites which are nearly always part of the outbreak
+
+print(V(G)$tau)
+```
+
+
+# Exercise 3: Figure out what makes a node more likely to have a low average discovery time
+
+## Part 1: Guess just by looking at the network
+Just like in Exercise 2, part 1, the first thing you will be doing is just trying to make informed, intuitive guesses about what makes a node more important to the task at hand, except this time, the 'importance' is how good a sentinel it would be instead of how good an immunization candidate
+
+Directions: With your partner, pull up the visualization widget again and look at it, examining how you think epidemics may play out and who would get infected the most often and earliest. Write them down on a slip of paper with a sentence or so explanation and give it to me. 
+
+If you need help, you may go back to the animation code and watch it run a few times to get a sense of how the contagion flows through the network. If you do that, be sure to try out different starting nodes since in that example the patient 0 is always the same Vinitial but in our score calculation the starting node is random
+
+```{r}
+
+
+data <- toVisNetworkData(G)
+
+visNetwork(nodes=data$nodes, edges=data$edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_with_fr", randomSeed = 12357) %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+```
+
+## Part 2: Correlations between \tau and other metrics
+
+Directions: Visualize the \tau score in one of the same ways we have visualized  centrality scores earlier in class. With your partner, try to figure out why the results were the way they were. Why were the nodes with the lowest the quickest and most often infected? Why did the nodes with the highest tau get infected more slowly or less often?
+
+Hint: Recall that you can display more than one node attribute at a time using both
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Resources I used
+- https://igraph.org/r/doc/
+- https://jjborrelli.github.io/post/simple-food-web-plotting/
+- http://tuvalu.santafe.edu/~aaronc/slides/Clauset_CSSS2014_Networks_1.pdf
+- http://www2.unb.ca/~ddu/6634/Lecture_notes/Lec1_intro_handout.pdf
+- https://www.rdocumentation.org/packages/visNetwork/versions/2.0.4/topics/visNetwork-igraph
+- https://www.jessesadler.com/post/network-analysis-with-r/
+
+
+
+
+
+
+
+
+
+

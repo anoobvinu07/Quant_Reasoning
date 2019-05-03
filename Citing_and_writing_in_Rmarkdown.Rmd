@@ -1,0 +1,25 @@
+---
+title: "Learning to cite and write docs within Rmarkdown"
+author: "Anoob Prakash"
+date: "6 March 2019"
+output: pdf_document
+keep_tex: yes
+bibliography: MyCollection.bib
+
+---
+The begining of the document.. insert citation here [@Villemereuil2016; @Bontrager2018]... and link author name here @Villemereuil2016... you can get the citation key from mendley or the bib file itself.  
+
+
+**Notes on output chunk**
+
+   **csl:** citation style - find it online or from the journal file and then inser the same in the top chunk..
+
+   **keep_tex: yes** - helps keep the tex file which can be used to work in LaTeX or overleaf. A word of **caution**, always keep it just below the **output:** line in order to avoid any unnecessary complications.  
+   
+
+**Useful packages to keep an eye out for:**
+
+  * `natbib` for citation managing in LaTeX.  
+  * `kable` - package for pulling out table for R  
+
+**References**

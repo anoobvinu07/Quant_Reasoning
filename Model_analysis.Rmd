@@ -1,0 +1,331 @@
+---
+title: "inClassModeling"
+author: "Baxter Worthing"
+date: "4/10/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(patchwork)
+require(deSolve)
+## Loading required package: deSolve
+# Initial values
+
+#Nvals <- seq(1,50)
+#for (i in Nvals) {
+
+state <- c(N=i)
+times <- seq(0,500,by=.1)
+
+# Parameters
+parameters <- c(R = .06, s = 0.8, h=.075)
+
+# Model
+forestMod <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- R*N*(1-N) - (h*N)/(N+s)
+      list(c(dN))   
+  })}
+
+# Solve model and check if given N is equilibrium point
+out <- as.data.frame(ode(y = state,times=times,func=forestMod ,parms=parameters))
+
+
+  
+
+
+
+
+ggplot(out, aes(x=time, y=N)) +
+  geom_point()
+
+```
+
+```{r}
+
+require(deSolve)
+## Loading required package: deSolve
+# Initial values
+
+hvals <- seq(.05,.1,.01)
+
+zeros <- data_frame(val=hvals, zero = 1:length(hvals))
+
+cntr <- 1
+for (i in hvals) {
+
+state <- c(N=100)
+times <- seq(0,100,by=.1)
+
+# Parameters
+parameters <- c(R = .06, s = 0.8, h=i)
+
+# Model
+forestMod <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- R*N*(1-N) - (h*N)/(N+s)
+      list(c(dN))   
+  })}
+
+# Solve model and check if given N is equilibrium point
+out <- as.data.frame(ode(y = state,times=times,func=forestMod ,parms=parameters))
+
+#when does N = 0?
+  
+out[head(which(out$N<1),1),1] -> zeros[cntr,2]
+
+cntr <- cntr + 1  
+}
+
+
+hp <-ggplot(zeros, aes(x=val,y=zero)) +
+geom_point() +
+  labs(title = "Parameter h")
+
+
+
+```
+
+do the same for R
+
+```{r}
+
+require(deSolve)
+## Loading required package: deSolve
+# Initial values
+
+rvals <- seq(.03,.1,.01)
+
+zeros <- data_frame(val=rvals, zero = 1:length(rvals))
+
+cntr <- 1
+for (i in rvals) {
+
+state <- c(N=100)
+times <- seq(0,100,by=.1)
+
+# Parameters
+parameters <- c(R = i, s = 0.8, h=.075)
+
+# Model
+forestMod <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- R*N*(1-N) - (h*N)/(N+s)
+      list(c(dN))   
+  })}
+
+# Solve model and check if given N is equilibrium point
+out <- as.data.frame(ode(y = state,times=times,func=forestMod ,parms=parameters))
+
+#when does N = 0?
+  
+out[head(which(out$N<1),1),1] -> zeros[cntr,2]
+
+cntr <- cntr + 1  
+}
+
+Rp <- ggplot(zeros, aes(x=val,y=zero)) +
+ geom_point() +
+  labs(title= "Parameter R")
+
+
+
+```
+
+
+do same for s
+```{r}
+require(deSolve)
+## Loading required package: deSolve
+# Initial values
+
+svals <- seq(.1,1,.1)
+
+zeros <- data_frame(val=svals, zero = 1:length(svals))
+
+cntr <- 1
+for (i in svals) {
+
+state <- c(N=100)
+times <- seq(0,100,by=.1)
+
+# Parameters
+parameters <- c(R = .06, s = i, h=.075)
+
+# Model
+forestMod <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- R*N*(1-N) - (h*N)/(N+s)
+      list(c(dN))   
+  })}
+
+# Solve model and check if given N is equilibrium point
+out <- as.data.frame(ode(y = state,times=times,func=forestMod ,parms=parameters))
+
+#when does N = 0?
+  
+out[head(which(out$N<1),1),1] -> zeros[cntr,2]
+
+cntr <- cntr + 1  
+}
+
+Sp <- ggplot(zeros, aes(x=val,y=zero)) +
+ geom_point() +
+  labs(title= "Parameter s")
+
+```
+
+
+
+what happens if we keep efficiency high and growth rate low???
+
+```{r}
+
+state <- c(N=i)
+times <- seq(0,500,by=.1)
+
+# Parameters
+parameters <- c(R = .1, s = 0.8, h=.05)
+
+# Model
+forestMod <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- R*N*(1-N) - (h*N)/(N+s)
+      list(c(dN))   
+  })}
+
+# Solve model and check if given N is equilibrium point
+out <- as.data.frame(ode(y = state,times=times,func=forestMod ,parms=parameters))
+
+
+  
+
+
+
+
+ggplot(out, aes(x=time, y=N)) +
+  geom_point()
+
+
+```
+
+what does growth rate have to be to not have pop decline 
+
+```{r}
+require(deSolve)
+## Loading required package: deSolve
+# Initial values
+
+rvals <- seq(.06,.1,.01)
+
+zeros <- data_frame(val=rvals, zero = 1:length(rvals))
+
+cntr <- 1
+for (i in rvals) {
+
+state <- c(N=100)
+times <- seq(0,100,by=.1)
+
+# Parameters
+parameters <- c(R = i, s = 0.8, h=.075)
+
+# Model
+forestMod <- function(t,state,parameters){
+  with(as.list(c(state,parameters)),{
+       dN <- R*N*(1-N) - (h*N)/(N+s)
+      list(c(dN))   
+  })}
+
+# Solve model and check if given N is equilibrium point
+out <- as.data.frame(ode(y = state,times=times,func=forestMod ,parms=parameters))
+
+#which val of R helps you 
+  
+out[head(which(out$N<1),1),1] -> zeros[cntr,2]
+
+cntr <- cntr + 1  
+}
+
+Rp <- ggplot(zeros, aes(x=val,y=zero)) +
+ geom_point() +
+  labs(title= "Parameter R")
+
+```
+
+Coupled models:
+```{r}
+# code from Natalia
+# parameters give
+k <- 0.17 # social learning rate
+w <- 0.35 # conservation cost
+c <- 0.6 # rarity valuation parameter
+d <- 0.5 # social norm strength
+# f <- 0.5 # forest cover
+r <- 0.06 # net growth, R <- 0.006 rate / fecundity
+s <- 0.8 # supply and demand parameter
+h <- 0.075 # harvesting efficiency
+
+# Initial values: population at 10
+state <- c(x = 0.001, f = 0.1)
+times <- seq(0, 100, by = 0.1)
+
+# Parameters
+parameters <- c(k = 0.17, w = 0.35, c = 0.6, d = 0.5, h = 0.075, s = 0.8, r = 0.06)
+
+# Model
+conservation <- function(t, state, parameters) {
+ with(as.list(c(state, parameters)), {    # with(as.list) trick to call the parameters from a named object above
+   df <- r * f * (1 - f) - (h * (1 - x) * f) / (f + s)
+   dx <- k * x * (1 - x) * (d * (2 * x - 1) + 1/(f + c) - w)
+   list(c(df, dx))
+ })}
+
+# Solve model and plot results
+out <- ode(y = state, times = times, func = conservation, parms = parameters)
+
+head(out)
+par(mfrow = c(1, 1))
+
+out <- as.data.frame(out)
+
+  ggplot(out, mapping = aes(x = time, y = f)) + 
+    geom_line(aes(y = f), col = "purple", size = 0.5) + 
+    geom_line(aes(y = x), col = "goldenrod", size = 0.5) + 
+    ylab("Fraction of the population adopting a conservationist strategy") + 
+    xlab("Time") + 
+    scale_y_continuous(sec.axis = sec_axis(~. * 0.5, name = "Forest Cover")) +
+    theme_classic()
+
+
+### code from Easton
+pars <- c(R = 0.06, s = 0.8, h = 0.15,k=0.17,w=1,c=0.6,d=0.3)
+yini  <- c(forest = 0.9, conservationist = 0.1)
+times <- seq(0, 300, by = 0.1)
+
+# model
+coupled_model <- function(Time, State, Pars) {
+ with(as.list(c(State, Pars)), {
+   dforest <-  R*forest*(1-forest) - (h*(1-conservationist)*forest)/(forest + s)
+   dconservationist <- k*conservationist*(1-conservationist)*(d*(2*conservationist - 1) + 1/(forest+c) - w)
+   return(list(c(dforest,dconservationist)))
+
+   #return(list(c(dforest, dconservationist)))
+ })
+}
+
+#out from model
+out   <- ode(yini, times, coupled_model, pars)
+
+par(mfrow=c(1,1))
+matplot(out[ , 1], out[ , 2:3], type = "l", xlab = "time", ylab = "Conc",
+       main = "Coupled model", lwd = 2)
+
+```
+

@@ -178,6 +178,19 @@ git status - to check the status of the git files to be uploaded</li>
 <li><p>To clone an online repository to the local machine git clone put the clone address here</p></li>
 <li><p>To pull changes from origin to the local machine git pull origin master</p></li>
 </ul>
+<pre class="bash"><code>git clone paste link
+
+# then make whatever changes to doc
+git add file_name
+
+git commit -m &quot;message&quot;
+
+git push -u origin master
+
+# then the owner can type
+
+git pull origin master # now they have the updated file
+</code></pre>
 </div>
 <div id="exponential-vs-logistic-growth-model" class="section level3">
 <h3>Exponential vs Logistic growth model</h3>
@@ -187,6 +200,12 @@ git status - to check the status of the git files to be uploaded</li>
 <li><p>In logistic growth, a population’s per capita growth rate gets smaller and smaller as population size approaches a maximum imposed by limited resources in the environment, known as the carrying capacity (<em>K</em>).</p></li>
 <li><p>Exponential growth produces a J-shaped curve, while logistic growth produces an S-shaped curve.</p></li>
 </ul>
+</div>
+<div id="fixation-index" class="section level2">
+<h2>Fixation index</h2>
+<p><span class="math display">\[F_{ST} = \frac{\Pi_{between} - \Pi_{within}}{\Pi_{between}}\]</span> <span class="math inline">\(F_{ST} = 1\)</span> -&gt; very different<br />
+<span class="math inline">\(F_{ST} = 0\)</span> -&gt; the same</p>
+<p><span class="math inline">\(\Pi_{between}\)</span> - average pair-wise difference</p>
 </div>
 
 

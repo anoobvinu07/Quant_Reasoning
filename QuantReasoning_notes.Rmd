@@ -43,10 +43,6 @@ bash code:
     
     note: local machine is master and origin is the online
     
-
-    
-    
-    
 * push an existing repository from the command line
     git remote add origin https://github.com/anoobvinu07/Quant_Reasoning.git
     git push -u origin master
@@ -65,7 +61,7 @@ bash code:
 * To pull changes from origin to the local machine
     git pull origin master
     
-```{bash}
+```{bash eval=FALSE, include=TRUE}
 git clone paste link
 
 # then make whatever changes to doc
@@ -90,3 +86,10 @@ git pull origin master # now they have the updated file
 * In logistic growth, a population's per capita growth rate gets smaller and smaller as population size approaches a maximum imposed by limited resources in the environment, known as the carrying capacity (*K*).
 
 * Exponential growth produces a J-shaped curve, while logistic growth produces an S-shaped curve.
+
+## Fixation index
+$$F_{ST} = \frac{\Pi_{between} - \Pi_{within}}{\Pi_{between}}$$
+$F_{ST} = 1$ -> very different  
+$F_{ST} = 0$ -> the same 
+
+$\Pi_{between}$ - average pair-wise difference 

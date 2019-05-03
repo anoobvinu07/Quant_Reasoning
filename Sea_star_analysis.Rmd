@@ -1,0 +1,91 @@
+---
+title: "Sea Star"
+author: "Anoob Prakash"
+date: "22 March 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+library(tidyverse)
+
+ssWaste <- read.csv("./sea_star_wasting_prevalence_2014.csv")
+head(ssWaste)
+
+ssDens <- read.csv("./sea_star_density_2014_2015_san_juan_islands.csv")
+head(ssDens)
+
+(dens_plot <- ggplot(aes(x=Taxon, y=dens), data = ssDens) + 
+    geom_boxplot())
+### Density by sites
+(dens_site_plot <- ggplot(aes(x=Taxon, y=dens), data = ssDens) + 
+    geom_boxplot() +
+    facet_wrap(~Site) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9)))
+
+### Density by species
+(dens_site_plot <- ggplot(aes(x=Site, y=dens), data = ssDens) + 
+    geom_boxplot() +
+    facet_wrap(~Taxon) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9)))
+
+### Filtering out only the three prominent species
+newDens <- ssDens %>%
+  group_by(Taxon,Site, Year, dens, count, X) %>% 
+  filter(Taxon == "Evasterias" | Taxon == "Henricia.sp." | Taxon =="Pycnopodia") %>%
+  summarise()
+
+head(newDens)
+
+# Density by species
+(dens_site_plot <- ggplot(aes(x=Site, y=dens), data = newDens) + 
+    geom_boxplot() +
+    facet_wrap(~Taxon) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9)))
+
+## Year wise
+
+
+(dens_site_plot <- ggplot(aes(x=Year, y=dens), data = newDens) + 
+    geom_boxplot() +
+    facet_wrap(~Taxon) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9)))
+
+
+
+
+
+(healthPlot<- ggplot(aes(x=healthy, y=Site), data = ssWaste) + 
+    geom_count() + 
+    facet_wrap(~species)) # species: evas, hen and pycn
+
+(sickPlot<- ggplot(aes(x=sick, y=Site), data = ssWaste) + 
+    geom_count() + 
+    facet_wrap(~species))
+
+(totalPlot <- ggplot(aes(x=species, y=count, fill = sick), data = ssWaste) +
+    geom_col())
+totalPlot
+
+
+### Proportion of healthy and the sick
+library(plotly)
+
+plot_ly(data=ssWaste, x = ~species, y = ~healthy, type = 'bar', name = 'Healthy') %>%
+    add_trace(y = ~sick, name = 'Sick') %>%
+    layout(yaxis = list(title = 'Count'), barmode = 'stack') 
+
+ssWaste %>% 
+   select(-count) %>% 
+   gather(type, count, healthy:sick) %>% 
+   ggplot(., aes(x=species, y=count, fill=type)) +
+   geom_bar(stat="identity")
+
+## checking how the gather() works
+d <- ssWaste %>% 
+   select(-count) %>% 
+   gather(type, count, healthy:sick)
+head(d)
+
+```
+

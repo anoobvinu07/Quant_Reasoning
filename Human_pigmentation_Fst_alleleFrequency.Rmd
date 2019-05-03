@@ -1,0 +1,42 @@
+---
+title: "Pop. Gen. Fst"
+author: "Anoob Prakash"
+date: "22 February 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+
+```{r}
+fst <- read.csv("./fst_values_human_skin_pigmentation.csv", header = TRUE, sep = ',')
+head(fst)
+
+alleleFrequency <- read.csv("./allele_freq_data_human_pigmentation_genes.csv", header = TRUE, sep = ',')
+head(alleleFrequency)
+
+# potential questions for the dataset!
+# study OCA2 gene and the fixation index relating to it across the population
+
+# PCA of Fst across the populations
+
+# The populations the alleles are fixed, is there a trend here?
+
+library(tidyverse)
+
+ggplot(alleleFrequency, aes(x=population_name, y=SLC24A5)) + geom_boxplot() # this gene is either fixed or gone extinct in the most of the populations studied
+ggplot(alleleFrequency, aes(x=population_name, y=SLC24A5)) + geom_boxplot(outlier.colour = 'red')
+
+ggplot(alleleFrequency, aes(x=population_name, y=SLC24A5)) + geom_boxplot(outlier.colour = 'red')
+
+ggplot(alleleFrequency, aes(x=population_name, y=MATP)) + geom_boxplot(outlier.colour = 'red')
+
+ggplot(fst, aes(x=gene, y=fst)) + geom_boxplot(outlier.colour = 'red')
+
+alleleFrequency_long <- gather(alleleFrequency, population_name, n, ASIP:SLC24A5, factor_key = TRUE)
+head(alleleFrequency_long)
+
+```
+
